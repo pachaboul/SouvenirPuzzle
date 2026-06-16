@@ -12,6 +12,14 @@
 
 ---
 
+## 📥 Download (Android)
+
+**[Download the latest APK (v1.0.0)](https://github.com/pachaboul/SouvenirPuzzle/releases/download/v1.0.0/souvenir-puzzle-v1.0.0.apk)** — ~21 MB.
+
+On your Android phone: open the link, download the APK, then allow installation from unknown sources when prompted. All releases are listed on the [Releases page](https://github.com/pachaboul/SouvenirPuzzle/releases).
+
+---
+
 ## Vision
 
 Souvenir Puzzle is more than a puzzle game. Many people have thousands of photos on their phone but rarely look at them. This game gives those photos a new life by turning them into a gentle, emotional activity that the whole family can enjoy — children, parents, couples, seniors, the diaspora, and casual players alike.
