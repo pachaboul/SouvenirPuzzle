@@ -2,6 +2,7 @@
 class PuzzleSessionModel {
   const PuzzleSessionModel({
     required this.id,
+    required this.profileId,
     required this.originalImageReference,
     required this.imagePath,
     required this.thumbnailPath,
@@ -17,6 +18,7 @@ class PuzzleSessionModel {
   });
 
   final String id;
+  final String profileId;
   final String? originalImageReference;
   final String imagePath;
   final String? thumbnailPath;
@@ -42,6 +44,7 @@ class PuzzleSessionModel {
   }) {
     return PuzzleSessionModel(
       id: id,
+      profileId: profileId,
       originalImageReference: originalImageReference,
       imagePath: imagePath,
       thumbnailPath: thumbnailPath,
@@ -60,6 +63,7 @@ class PuzzleSessionModel {
   Map<String, Object?> toMap() {
     return {
       'id': id,
+      'profile_id': profileId,
       'original_image_reference': originalImageReference,
       'image_path': imagePath,
       'thumbnail_path': thumbnailPath,
@@ -78,6 +82,7 @@ class PuzzleSessionModel {
   factory PuzzleSessionModel.fromMap(Map<String, Object?> map) {
     return PuzzleSessionModel(
       id: map['id'] as String,
+      profileId: map['profile_id'] as String,
       originalImageReference: map['original_image_reference'] as String?,
       imagePath: map['image_path'] as String,
       thumbnailPath: map['thumbnail_path'] as String?,

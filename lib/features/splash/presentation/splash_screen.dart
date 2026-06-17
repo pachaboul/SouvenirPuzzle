@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/theme.dart';
 import '../../../core/widgets/aurora_background.dart';
+import '../../../core/widgets/aurora_tokens.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../shell/presentation/main_shell.dart';
 
@@ -49,6 +50,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final tokens = AuroraTokens.of(context);
     return Scaffold(
       body: AuroraBackground(
         child: Center(
@@ -75,8 +77,8 @@ class _SplashScreenState extends State<SplashScreen>
                   const SizedBox(height: 28),
                   Text(
                     l.appName,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: tokens.onGlass,
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.5,
@@ -85,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen>
                   const SizedBox(height: 8),
                   Text(
                     l.splashTagline,
-                    style: const TextStyle(color: Colors.white70, fontSize: 14),
+                    style: TextStyle(color: tokens.onGlassMuted, fontSize: 14),
                   ),
                   const SizedBox(height: 40),
                   const SizedBox(

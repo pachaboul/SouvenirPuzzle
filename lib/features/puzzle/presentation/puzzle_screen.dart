@@ -14,8 +14,10 @@ import '../../../data/repositories/puzzle_providers.dart';
 import '../../../data/repositories/settings_providers.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../l10n/l10n_difficulty.dart';
+import '../domain/level_progression.dart';
 import '../domain/puzzle_difficulty.dart';
 import '../domain/puzzle_game.dart';
+import 'defeat_screen.dart';
 import 'puzzle_board.dart';
 import 'victory_screen.dart';
 
@@ -48,8 +50,9 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen> {
   ui.Image? _decoded;
   Timer? _timer;
   int _elapsed = 0;
+  late int _remaining = _difficulty.timeLimitSeconds;
   bool _paused = false;
-  bool _solvedHandled = false;
+  bool _finished = false;
 
   Future<ui.Image> _loadImage(File file) async {
     final bytes = await file.readAsBytes();
@@ -66,7 +69,19 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen> {
   void _startTimer() {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (!_paused && mounted) setState(() => _elapsed++);
+      if (_paused || !mounted || _finished) return;
+      if (_remaining <= 1) {
+        setState(() {
+          _elapsed++;
+          _remaining = 0;
+        });
+        _onTimeUp();
+        return;
+      }
+      setState(() {
+        _elapsed++;
+        _remaining--;
+      });
     });
   }
 
@@ -91,18 +106,27 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen> {
   }
 
   Future<void> _onSolved() async {
-    if (_solvedHandled) return;
-    _solvedHandled = true;
+    if (_finished) return;
+    _finished = true;
     _timer?.cancel();
 
     final seconds = _elapsed;
     final moves = _game.moves;
-    await ref.read(puzzleRepositoryProvider).recordResult(
+    final repo = ref.read(puzzleRepositoryProvider);
+    final winsBefore = await repo.winsByDifficulty();
+    final winsBeforeAtLevel = winsBefore[_difficulty] ?? 0;
+
+    await repo.recordResult(
           session: widget.session,
           difficulty: widget.difficulty,
           seconds: seconds,
           moves: moves,
         );
+
+    final unlockedLevel = LevelProgression.levelUnlockedByWin(
+      completedAt: _difficulty,
+      winsBeforeAtLevel: winsBeforeAtLevel,
+    );
 
     if (!mounted) return;
     Navigator.of(context).pushReplacement(
@@ -112,6 +136,26 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen> {
           difficulty: widget.difficulty,
           seconds: seconds,
           moves: moves,
+          unlockedLevel: unlockedLevel,
+        ),
+      ),
+    );
+  }
+
+  void _onTimeUp() {
+    if (_finished) return;
+    _finished = true;
+    _timer?.cancel();
+    _feedback.defeat();
+
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => DefeatScreen(
+          session: widget.session,
+          difficulty: widget.difficulty,
+          seconds: _elapsed,
+          moves: _game.moves,
         ),
       ),
     );
@@ -123,7 +167,9 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen> {
     setState(() {
       _game.reset();
       _elapsed = 0;
+      _remaining = _difficulty.timeLimitSeconds;
       _paused = false;
+      _finished = false;
     });
     _startTimer();
   }
@@ -217,7 +263,8 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen> {
                     children: [
                       _Stat(
                         icon: Icons.timer_outlined,
-                        value: formatDuration(_elapsed),
+                        value: formatDuration(_remaining),
+                        warning: _remaining <= 30,
                       ),
                       _Stat(icon: Icons.swap_horiz, value: '${_game.moves}'),
                     ],
@@ -255,25 +302,31 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen> {
 }
 
 class _Stat extends StatelessWidget {
-  const _Stat({required this.icon, required this.value});
+  const _Stat({
+    required this.icon,
+    required this.value,
+    this.warning = false,
+  });
 
   final IconData icon;
   final String value;
+  final bool warning;
 
   @override
   Widget build(BuildContext context) {
+    final accent = warning ? const Color(0xFFFF6B6B) : AppColors.or;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: AppColors.or),
+        Icon(icon, color: accent),
         const SizedBox(width: 8),
         Text(
           value,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: warning ? const Color(0xFFFF6B6B) : Colors.white,
             fontSize: 22,
             fontWeight: FontWeight.w600,
-            fontFeatures: [FontFeature.tabularFigures()],
+            fontFeatures: const [FontFeature.tabularFigures()],
           ),
         ),
       ],

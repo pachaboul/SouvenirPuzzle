@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/widgets/aurora_background.dart';
 import '../../../core/widgets/aurora_page.dart';
+import '../../../core/widgets/aurora_tokens.dart';
 import '../../../data/repositories/puzzle_providers.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../puzzle/domain/level_progression.dart';
@@ -71,6 +72,7 @@ class _DifficultyScreenState extends ConsumerState<DifficultyScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final tokens = AuroraTokens.of(context);
     return AuroraPage(
       title: l.difficultyTitle,
       child: _loading
@@ -98,8 +100,8 @@ class _DifficultyScreenState extends ConsumerState<DifficultyScreen> {
                           const SizedBox(height: 20),
                           Text(
                             l.difficultyChoose,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: tokens.onGlass,
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
                             ),

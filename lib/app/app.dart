@@ -14,15 +14,16 @@ class SouvenirPuzzleApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsControllerProvider).asData?.value;
+    final settingsAsync = ref.watch(settingsControllerProvider);
+    final themeMode = settingsAsync.value?.themeMode ?? ThemeMode.light;
 
     return MaterialApp(
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
-      themeMode: settings?.themeMode ?? ThemeMode.light,
-      locale: settings?.language.locale,
+      themeMode: themeMode,
+      locale: settingsAsync.value?.language.locale,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

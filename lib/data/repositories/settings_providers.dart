@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/app_settings.dart';
-import 'puzzle_providers.dart';
+import 'app_providers.dart';
 import 'settings_repository.dart';
 
 final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {

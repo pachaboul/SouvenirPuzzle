@@ -25,4 +25,10 @@ class FeedbackService {
     if (soundEnabled) SystemSound.play(SystemSoundType.alert);
     if (vibrationEnabled) HapticFeedback.mediumImpact();
   }
+
+  /// Called when the timer runs out.
+  void defeat() {
+    if (soundEnabled) SystemSound.play(SystemSoundType.alert);
+    if (vibrationEnabled) HapticFeedback.heavyImpact();
+  }
 }

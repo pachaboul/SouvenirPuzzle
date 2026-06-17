@@ -21,6 +21,8 @@ class AppColors {
 
   static const Color teal = Color(0xFF2BB7A3); // Expert
   static const Color rose = Color(0xFFE0556E); // Master
+  static const Color indigo = Color(0xFF4C6FFF); // Grand Master
+  static const Color amber = Color(0xFFFFB84D); // Legend
 
   /// Accent colour per difficulty.
   static Color difficulty(PuzzleDifficulty difficulty) {
@@ -35,6 +37,10 @@ class AppColors {
         return teal;
       case PuzzleDifficulty.master:
         return rose;
+      case PuzzleDifficulty.grandMaster:
+        return indigo;
+      case PuzzleDifficulty.legend:
+        return amber;
     }
   }
 }

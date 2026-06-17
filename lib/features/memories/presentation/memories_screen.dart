@@ -8,6 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import '../../../app/theme.dart';
 import '../../../core/widgets/aurora_background.dart';
 import '../../../core/widgets/aurora_page.dart';
+import '../../../core/widgets/aurora_tokens.dart';
+import '../../../core/widgets/profile_avatar_button.dart';
 import '../../../data/models/best_score.dart';
 import '../../../data/models/puzzle_session_model.dart';
 import '../../../data/repositories/puzzle_providers.dart';
@@ -27,10 +29,11 @@ String _formatSeconds(int seconds) {
 /// History of puzzles ("Mes souvenirs"): a photo gallery on an aurora backdrop.
 /// Add several photos, play a random one, or open a memory for details.
 class MemoriesScreen extends ConsumerStatefulWidget {
-  const MemoriesScreen({super.key, this.onMenu});
+  const MemoriesScreen({super.key, this.onMenu, this.onProfile});
 
   /// Opens the app drawer when hosted in the shell.
   final VoidCallback? onMenu;
+  final VoidCallback? onProfile;
 
   @override
   ConsumerState<MemoriesScreen> createState() => _MemoriesScreenState();
@@ -118,21 +121,18 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
     await showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
-      backgroundColor: AppColors.bleuNuit,
-      builder: (context) => Theme(
-        data: AppTheme.dark(),
-        child: _DetailsSheet(
-          session: session,
-          bests: _bests[session.id] ?? const {},
-          onPlay: () {
-            Navigator.of(context).pop();
-            _open(session);
-          },
-          onDelete: () {
-            Navigator.of(context).pop();
-            _confirmDelete(session);
-          },
-        ),
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      builder: (context) => _DetailsSheet(
+        session: session,
+        bests: _bests[session.id] ?? const {},
+        onPlay: () {
+          Navigator.of(context).pop();
+          _open(session);
+        },
+        onDelete: () {
+          Navigator.of(context).pop();
+          _confirmDelete(session);
+        },
       ),
     );
   }
@@ -177,6 +177,8 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
               onPressed: widget.onMenu,
             ),
       actions: [
+        if (widget.onProfile != null)
+          ProfileAvatarButton(onTap: widget.onProfile!),
         IconButton(
           icon: const Icon(Icons.add_a_photo_outlined),
           tooltip: l.memoriesAdd,
@@ -216,22 +218,28 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
     return Column(
       children: [
         _ProgressionHeader(wins: _wins),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         Expanded(
-          child: GridView.builder(
-            padding: const EdgeInsets.only(bottom: 96),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 0.86,
-            ),
-            itemCount: _sessions.length,
-            itemBuilder: (context, index) {
-              final session = _sessions[index];
-              return _MemoryTile(
-                session: session,
-                onTap: () => _showDetails(session),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              // 3 thumbnails per row on phones; 4 on wider screens.
+              final crossAxisCount = constraints.maxWidth >= 520 ? 4 : 3;
+              return GridView.builder(
+                padding: const EdgeInsets.only(bottom: 88),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  childAspectRatio: 1,
+                ),
+                itemCount: _sessions.length,
+                itemBuilder: (context, index) {
+                  final session = _sessions[index];
+                  return _MemoryTile(
+                    session: session,
+                    onTap: () => _showDetails(session),
+                  );
+                },
               );
             },
           ),
@@ -249,19 +257,26 @@ class _ProgressionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassCard(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-      borderRadius: 20,
-      child: Row(
-        children: [
-          for (final difficulty in PuzzleDifficulty.values)
-            Expanded(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      borderRadius: 16,
+      child: SizedBox(
+        height: 64,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: PuzzleDifficulty.values.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 8),
+          itemBuilder: (context, index) {
+            final difficulty = PuzzleDifficulty.values[index];
+            return SizedBox(
+              width: 72,
               child: _LevelChip(
                 difficulty: difficulty,
                 wins: wins[difficulty] ?? 0,
                 unlocked: LevelProgression.isUnlocked(difficulty, wins),
               ),
-            ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -281,44 +296,45 @@ class _LevelChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final tokens = AuroraTokens.of(context);
     final accent = AppColors.difficulty(difficulty);
     final progress =
         (min(wins, LevelProgression.matchesPerLevel) /
                 LevelProgression.matchesPerLevel)
             .clamp(0.0, 1.0);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 2),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             difficulty.label(l),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: unlocked ? accent : Colors.white60,
+              color: unlocked ? accent : tokens.onGlassMuted,
               fontWeight: FontWeight.w700,
-              fontSize: 12,
+              fontSize: 10,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           if (unlocked) ...[
             ClipRRect(
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(3),
               child: LinearProgressIndicator(
                 value: progress,
-                minHeight: 6,
+                minHeight: 4,
                 color: accent,
-                backgroundColor: Colors.white24,
+                backgroundColor: tokens.divider,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             Text(
               '$wins/${LevelProgression.matchesPerLevel}',
-              style: const TextStyle(color: Colors.white70, fontSize: 11),
+              style: TextStyle(color: tokens.onGlassMuted, fontSize: 9),
             ),
           ] else
-            const Padding(
-              padding: EdgeInsets.only(top: 2),
-              child: Icon(Icons.lock_outline, size: 18, color: Colors.white60),
-            ),
+            Icon(Icons.lock_outline, size: 14, color: tokens.onGlassMuted),
         ],
       ),
     );
@@ -335,38 +351,52 @@ class _MemoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final thumbPath = session.thumbnailPath;
     final hasThumb = thumbPath != null && File(thumbPath).existsSync();
+    final tokens = AuroraTokens.of(context);
     return GestureDetector(
       onTap: onTap,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            if (hasThumb)
-              Image.file(File(thumbPath), fit: BoxFit.cover)
-            else
-              const ColoredBox(
-                color: AppColors.bleuSecondaire,
-                child: Icon(Icons.image_outlined, color: Colors.white54),
-              ),
-            // Bottom scrim for legibility.
-            const DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black54],
-                  stops: [0.5, 1],
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: tokens.glassBorder),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              if (hasThumb)
+                Image.file(
+                  File(thumbPath),
+                  fit: BoxFit.cover,
+                  cacheWidth: 240,
+                )
+              else
+                ColoredBox(
+                  color: AppColors.bleuSecondaire,
+                  child: Icon(
+                    Icons.image_outlined,
+                    color: tokens.onGlassSubtle,
+                    size: 28,
+                  ),
+                ),
+              const DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black54],
+                    stops: [0.55, 1],
+                  ),
                 ),
               ),
-            ),
-            Positioned(
-              left: 10,
-              right: 10,
-              bottom: 8,
-              child: _TileCaption(session: session),
-            ),
-          ],
+              Positioned(
+                left: 6,
+                right: 6,
+                bottom: 5,
+                child: _TileCaption(session: session),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -382,18 +412,18 @@ class _TileCaption extends StatelessWidget {
   Widget build(BuildContext context) {
     if (session.playCount == 0 || session.bestTimeSeconds == null) {
       return const Row(
-        children: [Icon(Icons.fiber_new, color: AppColors.or, size: 18)],
+        children: [Icon(Icons.fiber_new, color: AppColors.or, size: 14)],
       );
     }
     return Row(
       children: [
-        const Icon(Icons.timer_outlined, color: Colors.white, size: 14),
-        const SizedBox(width: 4),
+        const Icon(Icons.timer_outlined, color: Colors.white, size: 11),
+        const SizedBox(width: 2),
         Text(
           _formatSeconds(session.bestTimeSeconds!),
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 12,
+            fontSize: 10,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -401,11 +431,11 @@ class _TileCaption extends StatelessWidget {
         Icon(
           Icons.play_arrow,
           color: Colors.white.withValues(alpha: 0.9),
-          size: 16,
+          size: 12,
         ),
         Text(
           '${session.playCount}',
-          style: const TextStyle(color: Colors.white, fontSize: 12),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         ),
       ],
     );
@@ -437,25 +467,34 @@ class _DetailsSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: AspectRatio(
-                aspectRatio: 16 / 10,
+              borderRadius: BorderRadius.circular(14),
+              child: SizedBox(
+                height: 110,
+                width: double.infinity,
                 child: File(imagePath).existsSync()
-                    ? Image.file(File(imagePath), fit: BoxFit.cover)
+                    ? Image.file(
+                        File(imagePath),
+                        fit: BoxFit.cover,
+                        cacheWidth: 480,
+                      )
                     : const ColoredBox(color: AppColors.bleuSecondaire),
               ),
             ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                for (final difficulty in PuzzleDifficulty.values)
-                  Expanded(
-                    child: _BestPerLevel(
-                      difficulty: difficulty,
-                      best: bests[difficulty],
+            const SizedBox(height: 12),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  for (final difficulty in PuzzleDifficulty.values)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: _BestPerLevel(
+                        difficulty: difficulty,
+                        best: bests[difficulty],
+                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
             const SizedBox(height: 20),
             Row(
@@ -504,12 +543,13 @@ class _BestPerLevel extends StatelessWidget {
           difficulty.label(l),
           style: theme.textTheme.labelSmall?.copyWith(
             color: AppColors.difficulty(difficulty),
+            fontSize: 10,
           ),
         ),
         const SizedBox(height: 2),
         Text(
           value,
-          style: theme.textTheme.titleMedium?.copyWith(
+          style: theme.textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.bold,
             fontFeatures: const [FontFeature.tabularFigures()],
           ),
@@ -527,6 +567,7 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final tokens = AuroraTokens.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -541,8 +582,8 @@ class _EmptyState extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               l.memoriesEmptyTitle,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: tokens.onGlass,
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
@@ -551,7 +592,7 @@ class _EmptyState extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               l.memoriesEmptyBody,
-              style: const TextStyle(color: Colors.white70),
+              style: TextStyle(color: tokens.onGlassMuted),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),

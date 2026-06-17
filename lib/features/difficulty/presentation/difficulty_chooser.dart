@@ -18,11 +18,8 @@ Future<PuzzleDifficulty?> showDifficultyChooser(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
-    backgroundColor: AppColors.bleuNuit,
-    builder: (context) => Theme(
-      data: AppTheme.dark(),
-      child: _DifficultyChooserSheet(wins: wins),
-    ),
+    backgroundColor: Theme.of(context).colorScheme.surface,
+    builder: (context) => _DifficultyChooserSheet(wins: wins),
   );
 }
 
@@ -132,6 +129,8 @@ class DifficultyLevelTile extends StatelessWidget {
               children: [
                 Text(
                   '${difficulty.label(l)} · ${difficulty.gridSize}×${difficulty.gridSize}',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.titleMedium
                       ?.copyWith(fontWeight: FontWeight.w600),
                 ),
@@ -152,9 +151,17 @@ class DifficultyLevelTile extends StatelessWidget {
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
+                  Text(
+                    l.puzzleTimeLimit(_formatDuration(difficulty.timeLimitSeconds)),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ] else
                   Text(
                     _lockHint(l),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
@@ -181,4 +188,10 @@ class DifficultyLevelTile extends StatelessWidget {
     if (required == null) return l.locked;
     return l.lockHint(LevelProgression.winsToUnlock, required.label(l));
   }
+}
+
+String _formatDuration(int seconds) {
+  final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
+  final secs = (seconds % 60).toString().padLeft(2, '0');
+  return '$minutes:$secs';
 }

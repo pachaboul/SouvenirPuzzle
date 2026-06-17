@@ -25,27 +25,30 @@ class PuzzleResultDao {
     return rows.map(PuzzleResultModel.fromMap).toList();
   }
 
-  /// Number of completed games per difficulty key (e.g. {'easy': 5}).
-  Future<Map<String, int>> countByDifficulty() async {
+  Future<Map<String, int>> countByDifficulty(String profileId) async {
     final db = await _db.database;
     final rows = await db.rawQuery(
       'SELECT difficulty, COUNT(*) AS c '
-      'FROM ${DatabaseTables.puzzleResults} GROUP BY difficulty',
+      'FROM ${DatabaseTables.puzzleResults} '
+      'WHERE profile_id = ? GROUP BY difficulty',
+      [profileId],
     );
     return {
       for (final row in rows) row['difficulty'] as String: row['c'] as int,
     };
   }
 
-  /// Best time / moves and play count per session and difficulty, in one query:
-  /// `{ sessionId: { 'easy': BestScore, ... } }`.
-  Future<Map<String, Map<String, BestScore>>> bestScoresBySession() async {
+  Future<Map<String, Map<String, BestScore>>> bestScoresBySession(
+    String profileId,
+  ) async {
     final db = await _db.database;
     final rows = await db.rawQuery(
       'SELECT puzzle_session_id AS sid, difficulty, '
       'MIN(time_seconds) AS bt, MIN(moves) AS bm, COUNT(*) AS c '
       'FROM ${DatabaseTables.puzzleResults} '
+      'WHERE profile_id = ? '
       'GROUP BY puzzle_session_id, difficulty',
+      [profileId],
     );
     final result = <String, Map<String, BestScore>>{};
     for (final row in rows) {
@@ -60,12 +63,15 @@ class PuzzleResultDao {
     return result;
   }
 
-  /// Overall totals: completed games, total time, total moves.
-  Future<({int completed, int totalTime, int totalMoves})> totals() async {
+  Future<({int completed, int totalTime, int totalMoves})> totals(
+    String profileId,
+  ) async {
     final db = await _db.database;
     final rows = await db.rawQuery(
       'SELECT COUNT(*) AS c, COALESCE(SUM(time_seconds), 0) AS t, '
-      'COALESCE(SUM(moves), 0) AS m FROM ${DatabaseTables.puzzleResults}',
+      'COALESCE(SUM(moves), 0) AS m FROM ${DatabaseTables.puzzleResults} '
+      'WHERE profile_id = ?',
+      [profileId],
     );
     final row = rows.first;
     return (
@@ -75,15 +81,36 @@ class PuzzleResultDao {
     );
   }
 
-  /// Best time per difficulty key (e.g. {'easy': 42}).
-  Future<Map<String, int>> bestTimeByDifficulty() async {
+  Future<List<PuzzleResultModel>> getAllOrdered(String profileId) async {
+    final db = await _db.database;
+    final rows = await db.query(
+      DatabaseTables.puzzleResults,
+      where: 'profile_id = ?',
+      whereArgs: [profileId],
+      orderBy: 'completed_at ASC',
+    );
+    return rows.map(PuzzleResultModel.fromMap).toList();
+  }
+
+  Future<Map<String, int>> bestTimeByDifficulty(String profileId) async {
     final db = await _db.database;
     final rows = await db.rawQuery(
       'SELECT difficulty, MIN(time_seconds) AS bt '
-      'FROM ${DatabaseTables.puzzleResults} GROUP BY difficulty',
+      'FROM ${DatabaseTables.puzzleResults} '
+      'WHERE profile_id = ? GROUP BY difficulty',
+      [profileId],
     );
     return {
       for (final row in rows) row['difficulty'] as String: row['bt'] as int,
     };
+  }
+
+  Future<void> deleteAllForProfile(String profileId) async {
+    final db = await _db.database;
+    await db.delete(
+      DatabaseTables.puzzleResults,
+      where: 'profile_id = ?',
+      whereArgs: [profileId],
+    );
   }
 }

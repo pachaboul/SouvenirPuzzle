@@ -254,6 +254,18 @@ abstract class AppLocalizations {
   /// **'Master'**
   String get difficultyMaster;
 
+  /// No description provided for @difficultyGrandMaster.
+  ///
+  /// In en, this message translates to:
+  /// **'Grandmaster'**
+  String get difficultyGrandMaster;
+
+  /// No description provided for @difficultyLegend.
+  ///
+  /// In en, this message translates to:
+  /// **'Legend'**
+  String get difficultyLegend;
+
   /// No description provided for @audienceEasy.
   ///
   /// In en, this message translates to:
@@ -283,6 +295,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Puzzle masters'**
   String get audienceMaster;
+
+  /// No description provided for @audienceGrandMaster.
+  ///
+  /// In en, this message translates to:
+  /// **'Dedicated experts'**
+  String get audienceGrandMaster;
+
+  /// No description provided for @audienceLegend.
+  ///
+  /// In en, this message translates to:
+  /// **'For legends only'**
+  String get audienceLegend;
 
   /// No description provided for @winsProgress.
   ///
@@ -338,6 +362,24 @@ abstract class AppLocalizations {
   /// **'Couldn\'t load the image'**
   String get puzzleImageError;
 
+  /// No description provided for @puzzleTimeLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Limit: {time}'**
+  String puzzleTimeLimit(Object time);
+
+  /// No description provided for @defeatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Time\'s up'**
+  String get defeatTitle;
+
+  /// No description provided for @defeatSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Match lost. Try again — you\'re almost there!'**
+  String get defeatSubtitle;
+
   /// No description provided for @victoryTitle.
   ///
   /// In en, this message translates to:
@@ -368,11 +410,35 @@ abstract class AppLocalizations {
   /// **'Next'**
   String get victoryNext;
 
+  /// No description provided for @victoryHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get victoryHome;
+
   /// No description provided for @victoryNewMemory.
   ///
   /// In en, this message translates to:
   /// **'New memory'**
   String get victoryNewMemory;
+
+  /// No description provided for @levelUnlockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Level unlocked!'**
+  String get levelUnlockTitle;
+
+  /// No description provided for @levelUnlockSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{level} is now available.'**
+  String levelUnlockSubtitle(Object level);
+
+  /// No description provided for @levelUnlockDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Awesome!'**
+  String get levelUnlockDismiss;
 
   /// No description provided for @memoriesTitle.
   ///
@@ -578,6 +644,138 @@ abstract class AppLocalizations {
   /// **'Play'**
   String get homePlay;
 
+  /// No description provided for @homeCurrentLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current level'**
+  String get homeCurrentLevel;
+
+  /// No description provided for @homeLevelMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {total} games'**
+  String homeLevelMatches(int current, int total);
+
+  /// No description provided for @homeUnlockNext.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {total} → {level}'**
+  String homeUnlockNext(int current, int total, Object level);
+
+  /// No description provided for @homeLevelMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Max level'**
+  String get homeLevelMax;
+
+  /// No description provided for @homeResumeLastMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish last match'**
+  String get homeResumeLastMatch;
+
+  /// No description provided for @homeWinsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Wins'**
+  String get homeWinsLabel;
+
+  /// No description provided for @homeUnlockLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock'**
+  String get homeUnlockLabel;
+
+  /// No description provided for @homeGridSize.
+  ///
+  /// In en, this message translates to:
+  /// **'{size}×{size} grid'**
+  String homeGridSize(int size);
+
+  /// No description provided for @profilesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profiles'**
+  String get profilesTitle;
+
+  /// No description provided for @profilesAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add profile'**
+  String get profilesAdd;
+
+  /// No description provided for @profilesCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create profile'**
+  String get profilesCreate;
+
+  /// No description provided for @profilesNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name or nickname'**
+  String get profilesNameHint;
+
+  /// No description provided for @profilesActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active profile'**
+  String get profilesActive;
+
+  /// No description provided for @profilesChooseAvatar.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a photo'**
+  String get profilesChooseAvatar;
+
+  /// No description provided for @profilesSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch profile'**
+  String get profilesSwitch;
+
+  /// No description provided for @profilesEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get profilesEdit;
+
+  /// No description provided for @profilesEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit profile'**
+  String get profilesEditTitle;
+
+  /// No description provided for @profilesSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get profilesSave;
+
+  /// No description provided for @profilesDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get profilesDelete;
+
+  /// No description provided for @profilesDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this profile?'**
+  String get profilesDeleteTitle;
+
+  /// No description provided for @profilesDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'All memories, statistics, and progress for this profile will be permanently deleted.'**
+  String get profilesDeleteBody;
+
+  /// No description provided for @profilesDeleteLast.
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t delete the last profile.'**
+  String get profilesDeleteLast;
+
   /// No description provided for @playNeedsPhotos.
   ///
   /// In en, this message translates to:
@@ -589,6 +787,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Menu'**
   String get menu;
+
+  /// No description provided for @menuSectionPlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get menuSectionPlay;
+
+  /// No description provided for @menuSectionProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get menuSectionProgress;
+
+  /// No description provided for @menuSectionInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Information'**
+  String get menuSectionInfo;
+
+  /// No description provided for @aboutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get aboutTitle;
+
+  /// No description provided for @aboutVision.
+  ///
+  /// In en, this message translates to:
+  /// **'Our vision'**
+  String get aboutVision;
+
+  /// No description provided for @aboutIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Souvenir Puzzle turns your photos into calm, personal puzzles. Every game is a memory to rebuild piece by piece — with family, friends, or on your own.'**
+  String get aboutIntro;
+
+  /// No description provided for @aboutMission.
+  ///
+  /// In en, this message translates to:
+  /// **'We believe the photos on your phone deserve more than a forgotten album. This game gives them a gentle second life — no ads, no mandatory account.'**
+  String get aboutMission;
+
+  /// No description provided for @aboutHowItWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'The experience'**
+  String get aboutHowItWorks;
+
+  /// No description provided for @aboutFeature1.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photos from your gallery — they stay on your device.'**
+  String get aboutFeature1;
+
+  /// No description provided for @aboutFeature2.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a level, from Easy (3×3) to Legend (9×9).'**
+  String get aboutFeature2;
+
+  /// No description provided for @aboutFeature3.
+  ///
+  /// In en, this message translates to:
+  /// **'Rebuild the image by swapping pieces at your own pace.'**
+  String get aboutFeature3;
+
+  /// No description provided for @aboutFeature4.
+  ///
+  /// In en, this message translates to:
+  /// **'No personal data is uploaded: full privacy by design.'**
+  String get aboutFeature4;
+
+  /// No description provided for @aboutStudio.
+  ///
+  /// In en, this message translates to:
+  /// **'Studio'**
+  String get aboutStudio;
+
+  /// No description provided for @aboutStudioName.
+  ///
+  /// In en, this message translates to:
+  /// **'Koyra Games'**
+  String get aboutStudioName;
+
+  /// No description provided for @aboutStudioTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm, emotional games for everyone.'**
+  String get aboutStudioTagline;
+
+  /// No description provided for @aboutStudioBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Souvenir Puzzle is carefully built by a small independent studio. Every update aims to make the experience smoother, warmer, and more beautiful.'**
+  String get aboutStudioBody;
+
+  /// No description provided for @aboutPrivacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get aboutPrivacyTitle;
+
+  /// No description provided for @aboutPrivacyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your photos and data stay on your device. No account is required. You can clear your history anytime in Settings.'**
+  String get aboutPrivacyBody;
+
+  /// No description provided for @aboutSupportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Support the project'**
+  String get aboutSupportTitle;
+
+  /// No description provided for @aboutSupportHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Enjoying Souvenir Puzzle?'**
+  String get aboutSupportHeadline;
+
+  /// No description provided for @aboutSupportIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'If this game means something to you, you can help keep it alive — bug fixes, new features, translations, and upkeep all take real time.'**
+  String get aboutSupportIntro;
+
+  /// No description provided for @aboutSupportWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Even a small contribution helps improve the app for everyone. Thank you from the bottom of my heart.'**
+  String get aboutSupportWhy;
+
+  /// No description provided for @aboutSupportThanks.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for your trust and generosity. Every bit of support matters.'**
+  String get aboutSupportThanks;
+
+  /// No description provided for @aboutContactCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact & support'**
+  String get aboutContactCta;
+
+  /// No description provided for @aboutVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String aboutVersion(Object version);
+
+  /// No description provided for @getStartedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get getStartedTitle;
+
+  /// No description provided for @getStartedIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Here\'s how to enjoy Souvenir Puzzle in a few simple steps.'**
+  String get getStartedIntro;
+
+  /// No description provided for @getStartedStep1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your photos'**
+  String get getStartedStep1Title;
+
+  /// No description provided for @getStartedStep1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'In My memories, add one or more photos from your gallery.'**
+  String get getStartedStep1Body;
+
+  /// No description provided for @getStartedStep2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a level'**
+  String get getStartedStep2Title;
+
+  /// No description provided for @getStartedStep2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'From Easy (3×3) to Legend (9×9) — progress by winning games.'**
+  String get getStartedStep2Body;
+
+  /// No description provided for @getStartedStep3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Rebuild the image'**
+  String get getStartedStep3Title;
+
+  /// No description provided for @getStartedStep3Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag pieces to swap them until your memory is complete.'**
+  String get getStartedStep3Body;
+
+  /// No description provided for @getStartedStep4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause and celebrate'**
+  String get getStartedStep4Title;
+
+  /// No description provided for @getStartedStep4Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause anytime, preview the original image, then enjoy your victory.'**
+  String get getStartedStep4Body;
+
+  /// No description provided for @getStartedCreatePuzzle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create my first puzzle'**
+  String get getStartedCreatePuzzle;
+
+  /// No description provided for @getStartedOpenMemories.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to My memories'**
+  String get getStartedOpenMemories;
 
   /// No description provided for @contactTitle.
   ///
@@ -691,6 +1111,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Play a puzzle to see your statistics.'**
   String get statsNoData;
+
+  /// No description provided for @statsOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get statsOverview;
+
+  /// No description provided for @statsActivityChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity · 14 days'**
+  String get statsActivityChart;
+
+  /// No description provided for @statsActivitySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Puzzles completed per day'**
+  String get statsActivitySubtitle;
+
+  /// No description provided for @statsTimeTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Average time · 14 days'**
+  String get statsTimeTrend;
+
+  /// No description provided for @statsTimeTrendSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Average solve time per game (min)'**
+  String get statsTimeTrendSubtitle;
+
+  /// No description provided for @statsStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Current streak'**
+  String get statsStreak;
+
+  /// No description provided for @statsStreakDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No streak} =1{1 day} other{{count} days}}'**
+  String statsStreakDays(int count);
+
+  /// No description provided for @statsAvgSolve.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. solve time'**
+  String get statsAvgSolve;
+
+  /// No description provided for @statsWinsPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Wins / day'**
+  String get statsWinsPerDay;
+
+  /// No description provided for @statsDifficultyBreakdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakdown by level'**
+  String get statsDifficultyBreakdown;
+
+  /// No description provided for @statsLevelDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Level details'**
+  String get statsLevelDetails;
+
+  /// No description provided for @statsPeriod7.
+  ///
+  /// In en, this message translates to:
+  /// **'7 d'**
+  String get statsPeriod7;
+
+  /// No description provided for @statsPeriod14.
+  ///
+  /// In en, this message translates to:
+  /// **'14 d'**
+  String get statsPeriod14;
+
+  /// No description provided for @statsPeriod30.
+  ///
+  /// In en, this message translates to:
+  /// **'30 d'**
+  String get statsPeriod30;
+
+  /// No description provided for @statsInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Trends'**
+  String get statsInsights;
+
+  /// No description provided for @statsThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get statsThisWeek;
+
+  /// No description provided for @statsWeekChangeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'+{percent}% vs last week'**
+  String statsWeekChangeUp(int percent);
+
+  /// No description provided for @statsWeekChangeDown.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% vs last week'**
+  String statsWeekChangeDown(int percent);
+
+  /// No description provided for @statsWeekChangeSame.
+  ///
+  /// In en, this message translates to:
+  /// **'Stable vs last week'**
+  String get statsWeekChangeSame;
+
+  /// No description provided for @statsWeekChangeNew.
+  ///
+  /// In en, this message translates to:
+  /// **'First active week'**
+  String get statsWeekChangeNew;
+
+  /// No description provided for @statsFavoriteLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorite level'**
+  String get statsFavoriteLevel;
+
+  /// No description provided for @statsBestStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Best streak'**
+  String get statsBestStreak;
+
+  /// No description provided for @statsActiveDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Active days'**
+  String get statsActiveDays;
+
+  /// No description provided for @statsRegularity.
+  ///
+  /// In en, this message translates to:
+  /// **'Consistency'**
+  String get statsRegularity;
+
+  /// No description provided for @statsPeakDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Best day'**
+  String get statsPeakDay;
+
+  /// No description provided for @statsPeakWins.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} games'**
+  String statsPeakWins(int count);
+
+  /// No description provided for @statsTotalInPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} games in period'**
+  String statsTotalInPeriod(int count);
+
+  /// No description provided for @statsAvgPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'{avg} / day on average'**
+  String statsAvgPerDay(String avg);
+
+  /// No description provided for @statsDistribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Distribution'**
+  String get statsDistribution;
+
+  /// No description provided for @statsProgression.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get statsProgression;
+
+  /// No description provided for @statsTapChartHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the chart for details'**
+  String get statsTapChartHint;
 }
 
 class _AppLocalizationsDelegate

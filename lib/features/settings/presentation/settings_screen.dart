@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme.dart';
 import '../../../core/widgets/aurora_background.dart';
 import '../../../core/widgets/aurora_page.dart';
+import '../../../core/widgets/profile_avatar_button.dart';
+import '../../../core/widgets/aurora_tokens.dart';
 import '../../../data/models/app_settings.dart';
 import '../../../data/repositories/puzzle_providers.dart';
 import '../../../data/repositories/settings_providers.dart';
@@ -12,10 +14,11 @@ import '../../contact/presentation/contact_screen.dart';
 
 /// Lets the user adjust sound, vibration, theme, language, privacy and history.
 class SettingsScreen extends ConsumerWidget {
-  const SettingsScreen({super.key, this.onMenu});
+  const SettingsScreen({super.key, this.onMenu, this.onProfile});
 
   /// Opens the app drawer when hosted in the shell.
   final VoidCallback? onMenu;
+  final VoidCallback? onProfile;
 
   Future<void> _clearHistory(BuildContext context, WidgetRef ref) async {
     final l = AppLocalizations.of(context);
@@ -49,6 +52,7 @@ class SettingsScreen extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final settingsAsync = ref.watch(settingsControllerProvider);
     final controller = ref.read(settingsControllerProvider.notifier);
+    final tokens = AuroraTokens.of(context);
 
     return AuroraPage(
       title: l.settingsTitle,
@@ -60,13 +64,16 @@ class SettingsScreen extends ConsumerWidget {
               tooltip: l.menu,
               onPressed: onMenu,
             ),
+      actions: onProfile == null
+          ? null
+          : [ProfileAvatarButton(onTap: onProfile!)],
       child: settingsAsync.when(
         loading: () =>
             const Center(child: CircularProgressIndicator(color: AppColors.or)),
         error: (e, _) => Center(
           child: Text(
             l.errorPrefix('$e'),
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(color: AuroraTokens.of(context).onGlass),
           ),
         ),
         data: (settings) => ListView(
@@ -76,29 +83,17 @@ class SettingsScreen extends ConsumerWidget {
               title: l.settingsSectionGame,
               child: Column(
                 children: [
-                  SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    secondary: const Icon(
-                      Icons.volume_up_outlined,
-                      color: Colors.white,
-                    ),
-                    title: Text(
-                      l.settingsSound,
-                      style: const TextStyle(color: Colors.white),
-                    ),
+                  _SettingsSwitchRow(
+                    icon: Icons.volume_up_outlined,
+                    label: l.settingsSound,
                     value: settings.soundEnabled,
-                    activeColor: AppColors.or,
                     onChanged: controller.setSoundEnabled,
                   ),
-                  SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    secondary: const Icon(Icons.vibration, color: Colors.white),
-                    title: Text(
-                      l.settingsVibration,
-                      style: const TextStyle(color: Colors.white),
-                    ),
+                  const Divider(height: 1, color: AppColors.cremeBordure),
+                  _SettingsSwitchRow(
+                    icon: Icons.vibration,
+                    label: l.settingsVibration,
                     value: settings.vibrationEnabled,
-                    activeColor: AppColors.or,
                     onChanged: controller.setVibrationEnabled,
                   ),
                 ],
@@ -106,46 +101,26 @@ class SettingsScreen extends ConsumerWidget {
             ),
             _GlassSection(
               title: l.settingsSectionAppearance,
-              child: SegmentedButton<ThemeMode>(
-                showSelectedIcon: false,
-                segments: [
-                  ButtonSegment(
-                    value: ThemeMode.light,
-                    label: Text(l.themeLight),
-                  ),
-                  ButtonSegment(
-                    value: ThemeMode.dark,
-                    label: Text(l.themeDark),
-                  ),
-                  ButtonSegment(
-                    value: ThemeMode.system,
-                    label: Text(l.themeSystem),
-                  ),
+              child: _ChipSelector<ThemeMode>(
+                value: settings.themeMode,
+                onChanged: controller.setThemeMode,
+                options: [
+                  (ThemeMode.light, l.themeLight),
+                  (ThemeMode.dark, l.themeDark),
+                  (ThemeMode.system, l.themeSystem),
                 ],
-                selected: {settings.themeMode},
-                onSelectionChanged: (s) => controller.setThemeMode(s.first),
               ),
             ),
             _GlassSection(
               title: l.settingsLanguage,
-              child: SegmentedButton<AppLanguage>(
-                showSelectedIcon: false,
-                segments: [
-                  ButtonSegment(
-                    value: AppLanguage.system,
-                    label: Text(l.languageSystem),
-                  ),
-                  ButtonSegment(
-                    value: AppLanguage.french,
-                    label: Text(l.languageFrench),
-                  ),
-                  ButtonSegment(
-                    value: AppLanguage.english,
-                    label: Text(l.languageEnglish),
-                  ),
+              child: _ChipSelector<AppLanguage>(
+                value: settings.language,
+                onChanged: controller.setLanguage,
+                options: [
+                  (AppLanguage.system, l.languageSystem),
+                  (AppLanguage.french, l.languageFrench),
+                  (AppLanguage.english, l.languageEnglish),
                 ],
-                selected: {settings.language},
-                onSelectionChanged: (s) => controller.setLanguage(s.first),
               ),
             ),
             _GlassSection(
@@ -157,8 +132,8 @@ class SettingsScreen extends ConsumerWidget {
                   Expanded(
                     child: Text(
                       l.settingsPrivacyText,
-                      style: const TextStyle(
-                        color: Colors.white70,
+                      style: TextStyle(
+                        color: tokens.onGlassMuted,
                         fontSize: 13,
                       ),
                     ),
@@ -167,39 +142,48 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
             GlassCard(
-              padding: EdgeInsets.zero,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
               borderRadius: 18,
-              child: ListTile(
-                leading: const Icon(Icons.support_agent_outlined,
-                    color: Colors.white),
-                title: Text(
-                  l.contactTitle,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const ContactScreen()),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.support_agent_outlined, color: tokens.onGlass),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Text(
+                      l.contactTitle,
+                      style: TextStyle(
+                        color: tokens.onGlass,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
-                ),
-                trailing:
-                    const Icon(Icons.chevron_right, color: Colors.white54),
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const ContactScreen()),
-                ),
+                  Icon(Icons.chevron_right, color: tokens.onGlassSubtle),
+                ],
               ),
             ),
             const SizedBox(height: 14),
             GlassCard(
-              padding: EdgeInsets.zero,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              borderRadius: 18,
               tint: AppColors.rouge,
-              child: ListTile(
-                leading: const Icon(Icons.delete_outline, color: Colors.white),
-                title: Text(
-                  l.settingsClearHistory,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+              onTap: () => _clearHistory(context, ref),
+              child: Row(
+                children: [
+                  const Icon(Icons.delete_outline, color: Colors.white),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Text(
+                      l.settingsClearHistory,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
-                ),
-                onTap: () => _clearHistory(context, ref),
+                ],
               ),
             ),
           ],
@@ -242,6 +226,92 @@ class _GlassSection extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _SettingsSwitchRow extends StatelessWidget {
+  const _SettingsSwitchRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = AuroraTokens.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Icon(icon, color: tokens.onGlass, size: 22),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(color: tokens.onGlass),
+            ),
+          ),
+          Transform.scale(
+            scale: 0.9,
+            child: Switch(
+              value: value,
+              activeColor: AppColors.or,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              onChanged: onChanged,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+typedef _ChipOption<T> = (T value, String label);
+
+/// Wrap-based selector that avoids [SegmentedButton] overflow on narrow widths.
+class _ChipSelector<T> extends StatelessWidget {
+  const _ChipSelector({
+    required this.value,
+    required this.onChanged,
+    required this.options,
+  });
+
+  final T value;
+  final ValueChanged<T> onChanged;
+  final List<_ChipOption<T>> options;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = AuroraTokens.of(context);
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        for (final option in options)
+          FilterChip(
+            label: Text(option.$2),
+            selected: value == option.$1,
+            showCheckmark: false,
+            selectedColor: AppColors.or.withValues(alpha: 0.35),
+            checkmarkColor: AppColors.encre,
+            labelStyle: TextStyle(
+              color: value == option.$1 ? AppColors.encre : tokens.onGlass,
+              fontWeight:
+                  value == option.$1 ? FontWeight.w700 : FontWeight.w500,
+            ),
+            side: BorderSide(
+              color: value == option.$1 ? AppColors.or : tokens.divider,
+            ),
+            onSelected: (_) => onChanged(option.$1),
+          ),
+      ],
     );
   }
 }

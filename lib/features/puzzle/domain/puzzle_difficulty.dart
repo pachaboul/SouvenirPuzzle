@@ -6,7 +6,9 @@ enum PuzzleDifficulty {
   medium(gridSize: 4),
   hard(gridSize: 5),
   expert(gridSize: 6),
-  master(gridSize: 7);
+  master(gridSize: 7),
+  grandMaster(gridSize: 8),
+  legend(gridSize: 9);
 
   const PuzzleDifficulty({required this.gridSize});
 
@@ -15,4 +17,7 @@ enum PuzzleDifficulty {
 
   /// Total number of pieces for this difficulty.
   int get pieceCount => gridSize * gridSize;
+
+  /// Seconds allowed before the match is lost (scales with grid size).
+  int get timeLimitSeconds => gridSize * 60;
 }

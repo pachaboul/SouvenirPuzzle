@@ -29,11 +29,13 @@ class PuzzleSessionDao {
     );
   }
 
-  /// Most recently played (or created) first.
-  Future<List<PuzzleSessionModel>> getAll() async {
+  /// Most recently played (or created) first, for one profile.
+  Future<List<PuzzleSessionModel>> getAll(String profileId) async {
     final db = await _db.database;
     final rows = await db.query(
       DatabaseTables.puzzleSessions,
+      where: 'profile_id = ?',
+      whereArgs: [profileId],
       orderBy: 'COALESCE(last_played_at, created_at) DESC',
     );
     return rows.map(PuzzleSessionModel.fromMap).toList();
@@ -45,6 +47,15 @@ class PuzzleSessionDao {
       DatabaseTables.puzzleSessions,
       where: 'id = ?',
       whereArgs: [id],
+    );
+  }
+
+  Future<void> deleteAllForProfile(String profileId) async {
+    final db = await _db.database;
+    await db.delete(
+      DatabaseTables.puzzleSessions,
+      where: 'profile_id = ?',
+      whereArgs: [profileId],
     );
   }
 }

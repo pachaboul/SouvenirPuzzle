@@ -3,9 +3,9 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
+import 'aurora_tokens.dart';
 
-/// Vibrant "aurora" backdrop: a dark base gradient with soft, heavily-blurred
-/// colored blobs. Used behind glassmorphism content.
+/// Vibrant "aurora" backdrop: adapts to light/dark [Theme].
 class AuroraBackground extends StatelessWidget {
   const AuroraBackground({super.key, required this.child});
 
@@ -13,15 +13,16 @@ class AuroraBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tokens = AuroraTokens.of(context);
     return Stack(
       fit: StackFit.expand,
       children: [
-        const DecoratedBox(
+        DecoratedBox(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [AppColors.bleuNuit, Color(0xFF0E2647), AppColors.bleuSecondaire],
+              colors: tokens.backgroundGradient,
             ),
           ),
         ),
@@ -29,10 +30,15 @@ class AuroraBackground extends StatelessWidget {
           imageFilter: ui.ImageFilter.blur(sigmaX: 90, sigmaY: 90),
           child: Stack(
             children: [
-              _Blob(top: -70, left: -50, size: 260, color: AppColors.or.withValues(alpha: 0.45)),
-              _Blob(top: 110, right: -70, size: 230, color: AppColors.violet.withValues(alpha: 0.40)),
-              _Blob(bottom: 60, right: 10, size: 200, color: const Color(0xFF3FA9F5).withValues(alpha: 0.38)),
-              _Blob(bottom: -50, left: 20, size: 260, color: AppColors.orClair.withValues(alpha: 0.30)),
+              for (final blob in tokens.blobs)
+                _Blob(
+                  top: blob.top,
+                  left: blob.left,
+                  right: blob.right,
+                  bottom: blob.bottom,
+                  size: blob.size,
+                  color: blob.color,
+                ),
             ],
           ),
         ),
@@ -94,16 +100,30 @@ class GlassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tokens = AuroraTokens.of(context);
     final radius = BorderRadius.circular(borderRadius);
+    final fill = tint == null
+        ? tokens.glassSurface
+        : tint!.withValues(alpha: tokens.isDark ? 0.22 : 0.35);
+
     return ClipRRect(
       borderRadius: radius,
       child: BackdropFilter(
         filter: ui.ImageFilter.blur(sigmaX: 18, sigmaY: 18),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: (tint ?? Colors.white).withValues(alpha: tint == null ? 0.12 : 0.22),
+            color: fill,
             borderRadius: radius,
-            border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+            border: Border.all(color: tokens.glassBorder),
+            boxShadow: tokens.isDark
+                ? null
+                : [
+                    BoxShadow(
+                      color: AppColors.encre.withValues(alpha: 0.06),
+                      blurRadius: 16,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
           ),
           child: Material(
             type: MaterialType.transparency,

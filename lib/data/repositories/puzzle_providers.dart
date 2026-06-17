@@ -1,18 +1,25 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/services/file_storage_service.dart';
-import '../local/app_database.dart';
+import '../models/puzzle_stats.dart';
+import 'app_providers.dart';
+import 'profile_providers.dart';
 import 'puzzle_repository.dart';
 
-final appDatabaseProvider = Provider<AppDatabase>((ref) {
-  final db = AppDatabase();
-  ref.onDispose(db.close);
-  return db;
-});
+export 'app_providers.dart';
+export 'profile_providers.dart';
+export 'puzzle_repository.dart';
 
 final puzzleRepositoryProvider = Provider<PuzzleRepository>((ref) {
+  ref.watch(profileControllerProvider);
   return PuzzleRepository(
     database: ref.watch(appDatabaseProvider),
-    storage: FileStorageService(),
+    storage: ref.watch(fileStorageServiceProvider),
+    profileIdProvider: () =>
+        ref.read(profileControllerProvider).requireValue.activeProfileId,
   );
+});
+
+final statsProvider = FutureProvider.autoDispose<PuzzleStats>((ref) {
+  ref.watch(profileControllerProvider);
+  return ref.watch(puzzleRepositoryProvider).getStats();
 });

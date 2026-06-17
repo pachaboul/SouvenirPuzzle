@@ -60,4 +60,15 @@ class FileStorageService {
     final file = File(path);
     if (await file.exists()) await file.delete();
   }
+
+  /// Saves a square avatar for a local profile.
+  Future<String> saveProfileAvatar(String profileId, File source) async {
+    final dir = await _subDir('avatars');
+    final ext = p.extension(source.path).isEmpty
+        ? '.jpg'
+        : p.extension(source.path);
+    final dest = p.join(dir.path, '$profileId$ext');
+    await source.copy(dest);
+    return dest;
+  }
 }

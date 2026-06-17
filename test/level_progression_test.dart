@@ -58,6 +58,52 @@ void main() {
       );
     });
 
+    test('levelUnlockedByWin detects the 33rd win on a level', () {
+      expect(
+        LevelProgression.levelUnlockedByWin(
+          completedAt: PuzzleDifficulty.easy,
+          winsBeforeAtLevel: 32,
+        ),
+        PuzzleDifficulty.medium,
+      );
+      expect(
+        LevelProgression.levelUnlockedByWin(
+          completedAt: PuzzleDifficulty.easy,
+          winsBeforeAtLevel: 33,
+        ),
+        isNull,
+      );
+      expect(
+        LevelProgression.levelUnlockedByWin(
+          completedAt: PuzzleDifficulty.legend,
+          winsBeforeAtLevel: 32,
+        ),
+        isNull,
+      );
+    });
+
+    test('activeLevel picks first unlocked level under 99 wins', () {
+      expect(
+        LevelProgression.activeLevel({PuzzleDifficulty.easy: 10}),
+        PuzzleDifficulty.easy,
+      );
+      expect(
+        LevelProgression.activeLevel({
+          PuzzleDifficulty.easy: 99,
+          PuzzleDifficulty.medium: 5,
+        }),
+        PuzzleDifficulty.medium,
+      );
+      expect(
+        LevelProgression.activeLevel({
+          PuzzleDifficulty.easy: 99,
+          PuzzleDifficulty.medium: 99,
+          PuzzleDifficulty.hard: 20,
+        }),
+        PuzzleDifficulty.hard,
+      );
+    });
+
     test('constants', () {
       expect(LevelProgression.winsToUnlock, 33);
       expect(LevelProgression.matchesPerLevel, 99);

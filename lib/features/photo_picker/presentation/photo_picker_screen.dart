@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../core/widgets/aurora_background.dart';
 import '../../../core/widgets/aurora_page.dart';
+import '../../../core/widgets/aurora_tokens.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../difficulty/presentation/difficulty_screen.dart';
 
@@ -52,6 +53,7 @@ class _PhotoPickerScreenState extends State<PhotoPickerScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final tokens = AuroraTokens.of(context);
     final image = _image;
     return AuroraPage(
       title: l.photoTitle,
@@ -74,12 +76,12 @@ class _PhotoPickerScreenState extends State<PhotoPickerScreen> {
           const SizedBox(height: 16),
           Row(
             children: [
-              const Icon(Icons.lock_outline, size: 16, color: Colors.white70),
+              Icon(Icons.lock_outline, size: 16, color: tokens.onGlassMuted),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
                   l.photoPrivacyNote,
-                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                  style: TextStyle(color: tokens.onGlassMuted, fontSize: 12),
                 ),
               ),
             ],
@@ -108,26 +110,27 @@ class _PhotoPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tokens = AuroraTokens.of(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white24, width: 2),
+          border: Border.all(color: tokens.divider, width: 2),
         ),
         padding: const EdgeInsets.all(40),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.add_photo_alternate_outlined,
-                size: 72, color: Colors.white),
+            Icon(Icons.add_photo_alternate_outlined,
+                size: 72, color: tokens.onGlassMuted),
             const SizedBox(height: 16),
             Text(
               AppLocalizations.of(context).photoTapToChoose,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: tokens.onGlass,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
