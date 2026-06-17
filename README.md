@@ -14,7 +14,7 @@
 
 ## 📥 Download (Android)
 
-**[Download the latest APK (v1.0.0)](https://github.com/pachaboul/SouvenirPuzzle/releases/download/v1.0.0/souvenir-puzzle-v1.0.0.apk)** — ~21 MB.
+**[Download the latest APK (v1.1.0)](https://github.com/pachaboul/SouvenirPuzzle/releases/download/v1.1.0/souvenir-puzzle-v1.1.0.apk)** — ~22 MB.
 
 On your Android phone: open the link, download the APK, then allow installation from unknown sources when prompted. All releases are listed on the [Releases page](https://github.com/pachaboul/SouvenirPuzzle/releases).
 
