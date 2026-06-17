@@ -11,6 +11,7 @@ import '../local/puzzle_session_dao.dart';
 import '../models/best_score.dart';
 import '../models/puzzle_result_model.dart';
 import '../models/puzzle_session_model.dart';
+import '../models/puzzle_stats.dart';
 
 /// Coordinates the database and local file storage for puzzle memories.
 class PuzzleRepository {
@@ -115,6 +116,26 @@ class PuzzleRepository {
         for (final entry in byName.entries)
           PuzzleDifficulty.values.byName(entry.key): entry.value,
       }),
+    );
+  }
+
+  /// Aggregate statistics for the stats page.
+  Future<PuzzleStats> getStats() async {
+    final sessions = await _sessions.getAll();
+    final totals = await _results.totals();
+    final winsByName = await _results.countByDifficulty();
+    final bestByName = await _results.bestTimeByDifficulty();
+    return PuzzleStats(
+      totalMemories: sessions.length,
+      totalCompleted: totals.completed,
+      totalTimeSeconds: totals.totalTime,
+      totalMoves: totals.totalMoves,
+      winsByDifficulty: {
+        for (final d in PuzzleDifficulty.values) d: winsByName[d.name] ?? 0,
+      },
+      bestTimeByDifficulty: {
+        for (final d in PuzzleDifficulty.values) d: bestByName[d.name],
+      },
     );
   }
 

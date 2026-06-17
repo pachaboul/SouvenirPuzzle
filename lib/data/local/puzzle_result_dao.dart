@@ -59,4 +59,31 @@ class PuzzleResultDao {
     }
     return result;
   }
+
+  /// Overall totals: completed games, total time, total moves.
+  Future<({int completed, int totalTime, int totalMoves})> totals() async {
+    final db = await _db.database;
+    final rows = await db.rawQuery(
+      'SELECT COUNT(*) AS c, COALESCE(SUM(time_seconds), 0) AS t, '
+      'COALESCE(SUM(moves), 0) AS m FROM ${DatabaseTables.puzzleResults}',
+    );
+    final row = rows.first;
+    return (
+      completed: row['c'] as int,
+      totalTime: row['t'] as int,
+      totalMoves: row['m'] as int,
+    );
+  }
+
+  /// Best time per difficulty key (e.g. {'easy': 42}).
+  Future<Map<String, int>> bestTimeByDifficulty() async {
+    final db = await _db.database;
+    final rows = await db.rawQuery(
+      'SELECT difficulty, MIN(time_seconds) AS bt '
+      'FROM ${DatabaseTables.puzzleResults} GROUP BY difficulty',
+    );
+    return {
+      for (final row in rows) row['difficulty'] as String: row['bt'] as int,
+    };
+  }
 }

@@ -302,4 +302,28 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get contactCouldNotOpen => 'Impossible d\'ouvrir l\'application';
+
+  @override
+  String get statsTitle => 'Statistiques';
+
+  @override
+  String get statsMemories => 'Souvenirs';
+
+  @override
+  String get statsCompleted => 'Terminés';
+
+  @override
+  String get statsTotalTime => 'Temps total';
+
+  @override
+  String get statsTotalMoves => 'Coups au total';
+
+  @override
+  String get statsByLevel => 'Par niveau';
+
+  @override
+  String get statsBest => 'Meilleur';
+
+  @override
+  String get statsNoData => 'Jouez à un puzzle pour voir vos statistiques.';
 }

@@ -301,4 +301,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contactCouldNotOpen => 'Couldn\'t open the app';
+
+  @override
+  String get statsTitle => 'Statistics';
+
+  @override
+  String get statsMemories => 'Memories';
+
+  @override
+  String get statsCompleted => 'Completed';
+
+  @override
+  String get statsTotalTime => 'Total time';
+
+  @override
+  String get statsTotalMoves => 'Total moves';
+
+  @override
+  String get statsByLevel => 'By level';
+
+  @override
+  String get statsBest => 'Best';
+
+  @override
+  String get statsNoData => 'Play a puzzle to see your statistics.';
 }

@@ -98,5 +98,14 @@
   "contactOrangeMoney": "Orange Money",
   "contactPaypal": "PayPal",
   "contactCopied": "Copié dans le presse-papiers",
-  "contactCouldNotOpen": "Impossible d'ouvrir l'application"
+  "contactCouldNotOpen": "Impossible d'ouvrir l'application",
+
+  "statsTitle": "Statistiques",
+  "statsMemories": "Souvenirs",
+  "statsCompleted": "Terminés",
+  "statsTotalTime": "Temps total",
+  "statsTotalMoves": "Coups au total",
+  "statsByLevel": "Par niveau",
+  "statsBest": "Meilleur",
+  "statsNoData": "Jouez à un puzzle pour voir vos statistiques."
 }

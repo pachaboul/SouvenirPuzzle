@@ -6,6 +6,7 @@ import '../../contact/presentation/contact_screen.dart';
 import '../../home/presentation/home_screen.dart';
 import '../../memories/presentation/memories_screen.dart';
 import '../../settings/presentation/settings_screen.dart';
+import '../../stats/presentation/stats_screen.dart';
 
 class _NavDestination {
   const _NavDestination(this.icon, this.selectedIcon, this.label);
@@ -37,6 +38,13 @@ class _MainShellState extends State<MainShell> {
     setState(() => _index = index);
   }
 
+  void _openPage(Widget page) {
+    if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
+      Navigator.of(context).pop();
+    }
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
@@ -56,14 +64,8 @@ class _MainShellState extends State<MainShell> {
       drawer: _AppDrawer(
         currentIndex: _index,
         onSelect: _go,
-        onContact: () {
-          if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
-            Navigator.of(context).pop();
-          }
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const ContactScreen()),
-          );
-        },
+        onStats: () => _openPage(const StatsScreen()),
+        onContact: () => _openPage(const ContactScreen()),
       ),
       body: IndexedStack(
         index: _index,
@@ -205,11 +207,13 @@ class _AppDrawer extends StatelessWidget {
   const _AppDrawer({
     required this.currentIndex,
     required this.onSelect,
+    required this.onStats,
     required this.onContact,
   });
 
   final int currentIndex;
   final void Function(int) onSelect;
+  final VoidCallback onStats;
   final VoidCallback onContact;
 
   @override
@@ -284,6 +288,12 @@ class _AppDrawer extends StatelessWidget {
                 onTap: () => onSelect(2),
               ),
               const SizedBox(height: 4),
+              _DrawerItem(
+                icon: Icons.bar_chart_outlined,
+                label: l.statsTitle,
+                selected: false,
+                onTap: onStats,
+              ),
               _DrawerItem(
                 icon: Icons.support_agent_outlined,
                 label: l.contactTitle,

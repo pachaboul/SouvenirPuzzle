@@ -619,6 +619,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t open the app'**
   String get contactCouldNotOpen;
+
+  /// No description provided for @statsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get statsTitle;
+
+  /// No description provided for @statsMemories.
+  ///
+  /// In en, this message translates to:
+  /// **'Memories'**
+  String get statsMemories;
+
+  /// No description provided for @statsCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get statsCompleted;
+
+  /// No description provided for @statsTotalTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Total time'**
+  String get statsTotalTime;
+
+  /// No description provided for @statsTotalMoves.
+  ///
+  /// In en, this message translates to:
+  /// **'Total moves'**
+  String get statsTotalMoves;
+
+  /// No description provided for @statsByLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'By level'**
+  String get statsByLevel;
+
+  /// No description provided for @statsBest.
+  ///
+  /// In en, this message translates to:
+  /// **'Best'**
+  String get statsBest;
+
+  /// No description provided for @statsNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'Play a puzzle to see your statistics.'**
+  String get statsNoData;
 }
 
 class _AppLocalizationsDelegate
