@@ -8,7 +8,10 @@ import '../../../l10n/app_localizations.dart';
 
 /// Lets the user adjust sound, vibration, theme, language, privacy and history.
 class SettingsScreen extends ConsumerWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({super.key, this.onMenu});
+
+  /// Opens the app drawer when hosted in the shell.
+  final VoidCallback? onMenu;
 
   Future<void> _clearHistory(BuildContext context, WidgetRef ref) async {
     final l = AppLocalizations.of(context);
@@ -45,7 +48,16 @@ class SettingsScreen extends ConsumerWidget {
     final controller = ref.read(settingsControllerProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l.settingsTitle)),
+      appBar: AppBar(
+        leading: onMenu == null
+            ? null
+            : IconButton(
+                icon: const Icon(Icons.menu),
+                tooltip: l.menu,
+                onPressed: onMenu,
+              ),
+        title: Text(l.settingsTitle),
+      ),
       body: SafeArea(
         child: settingsAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),

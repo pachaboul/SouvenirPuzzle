@@ -19,7 +19,10 @@ import '../../puzzle/presentation/puzzle_screen.dart';
 /// History of puzzles ("Mes souvenirs"): add several photos at once, play a
 /// random one (difficulty chosen at play time), or replay / delete a memory.
 class MemoriesScreen extends ConsumerStatefulWidget {
-  const MemoriesScreen({super.key});
+  const MemoriesScreen({super.key, this.onMenu});
+
+  /// Opens the app drawer when hosted in the shell.
+  final VoidCallback? onMenu;
 
   /// Maximum number of memories kept in the collection.
   static const int maxPhotos = 12;
@@ -145,6 +148,13 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
     final isFull = _sessions.length >= MemoriesScreen.maxPhotos;
     return Scaffold(
       appBar: AppBar(
+        leading: widget.onMenu == null
+            ? null
+            : IconButton(
+                icon: const Icon(Icons.menu),
+                tooltip: l.menu,
+                onPressed: widget.onMenu,
+              ),
         title: Text(
           _sessions.isEmpty
               ? l.memoriesTitle

@@ -262,4 +262,17 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get languageEnglish => 'English';
+
+  @override
+  String get navHome => 'Accueil';
+
+  @override
+  String get homePlay => 'Jouer';
+
+  @override
+  String get playNeedsPhotos =>
+      'Ajoutez d\'abord des photos dans Mes souvenirs.';
+
+  @override
+  String get menu => 'Menu';
 }

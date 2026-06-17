@@ -541,6 +541,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'English'**
   String get languageEnglish;
+
+  /// No description provided for @navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get navHome;
+
+  /// No description provided for @homePlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get homePlay;
+
+  /// No description provided for @playNeedsPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photos in My memories first.'**
+  String get playNeedsPhotos;
+
+  /// No description provided for @menu.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get menu;
 }
 
 class _AppLocalizationsDelegate

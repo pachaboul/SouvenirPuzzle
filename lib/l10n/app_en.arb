@@ -94,5 +94,10 @@
   "settingsLanguage": "Language",
   "languageSystem": "System",
   "languageFrench": "Français",
-  "languageEnglish": "English"
+  "languageEnglish": "English",
+
+  "navHome": "Home",
+  "homePlay": "Play",
+  "playNeedsPhotos": "Add photos in My memories first.",
+  "menu": "Menu"
 }

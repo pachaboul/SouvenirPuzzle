@@ -83,5 +83,10 @@
   "settingsLanguage": "Langue",
   "languageSystem": "Système",
   "languageFrench": "Français",
-  "languageEnglish": "English"
+  "languageEnglish": "English",
+
+  "navHome": "Accueil",
+  "homePlay": "Jouer",
+  "playNeedsPhotos": "Ajoutez d'abord des photos dans Mes souvenirs.",
+  "menu": "Menu"
 }

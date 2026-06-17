@@ -262,4 +262,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageEnglish => 'English';
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get homePlay => 'Play';
+
+  @override
+  String get playNeedsPhotos => 'Add photos in My memories first.';
+
+  @override
+  String get menu => 'Menu';
 }
