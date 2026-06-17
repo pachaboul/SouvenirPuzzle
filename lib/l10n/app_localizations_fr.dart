@@ -147,8 +147,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get memoriesTitle => 'Mes souvenirs';
 
   @override
-  String memoriesTitleCount(int count, int max) {
-    return 'Mes souvenirs ($count/$max)';
+  String memoriesCountTitle(int count) {
+    return 'Mes souvenirs ($count)';
   }
 
   @override
@@ -198,9 +198,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get memoriesEmptyTitle => 'Aucun souvenir pour l\'instant';
 
   @override
-  String memoriesEmptyBody(int max) {
-    return 'Ajoutez jusqu\'à $max photos, puis touchez « Jouer » pour un puzzle au hasard.';
-  }
+  String get memoriesEmptyBody =>
+      'Ajoutez vos photos, puis touchez « Jouer » pour un puzzle au hasard.';
 
   @override
   String get settingsSectionGame => 'Jeu';

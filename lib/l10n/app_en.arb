@@ -55,8 +55,8 @@
   "victoryNewMemory": "New memory",
 
   "memoriesTitle": "My memories",
-  "memoriesTitleCount": "My memories ({count}/{max})",
-  "@memoriesTitleCount": { "placeholders": { "count": { "type": "int" }, "max": { "type": "int" } } },
+  "memoriesCountTitle": "My memories ({count})",
+  "@memoriesCountTitle": { "placeholders": { "count": { "type": "int" } } },
   "memoriesAdd": "Add photos",
   "memoriesPlay": "Play",
   "memoriesLimitReached": "Limit of {max} photos reached.",
@@ -71,8 +71,7 @@
   "@memoriesPlayedTimes": { "placeholders": { "count": { "type": "int" } } },
   "memoriesReadyToPlay": "Photo ready to play",
   "memoriesEmptyTitle": "No memories yet",
-  "memoriesEmptyBody": "Add up to {max} photos, then tap Play for a random puzzle.",
-  "@memoriesEmptyBody": { "placeholders": { "max": { "type": "int" } } },
+  "memoriesEmptyBody": "Add your photos, then tap Play for a random puzzle.",
 
   "settingsSectionGame": "Game",
   "settingsSound": "Sound",

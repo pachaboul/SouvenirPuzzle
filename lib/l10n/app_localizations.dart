@@ -356,11 +356,11 @@ abstract class AppLocalizations {
   /// **'My memories'**
   String get memoriesTitle;
 
-  /// No description provided for @memoriesTitleCount.
+  /// No description provided for @memoriesCountTitle.
   ///
   /// In en, this message translates to:
-  /// **'My memories ({count}/{max})'**
-  String memoriesTitleCount(int count, int max);
+  /// **'My memories ({count})'**
+  String memoriesCountTitle(int count);
 
   /// No description provided for @memoriesAdd.
   ///
@@ -425,8 +425,8 @@ abstract class AppLocalizations {
   /// No description provided for @memoriesEmptyBody.
   ///
   /// In en, this message translates to:
-  /// **'Add up to {max} photos, then tap Play for a random puzzle.'**
-  String memoriesEmptyBody(int max);
+  /// **'Add your photos, then tap Play for a random puzzle.'**
+  String get memoriesEmptyBody;
 
   /// No description provided for @settingsSectionGame.
   ///

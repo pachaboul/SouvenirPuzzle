@@ -24,9 +24,6 @@ class MemoriesScreen extends ConsumerStatefulWidget {
   /// Opens the app drawer when hosted in the shell.
   final VoidCallback? onMenu;
 
-  /// Maximum number of memories kept in the collection.
-  static const int maxPhotos = 12;
-
   @override
   ConsumerState<MemoriesScreen> createState() => _MemoriesScreenState();
 }
@@ -67,33 +64,23 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
   }
 
   Future<void> _addPhotos() async {
-    final l = AppLocalizations.of(context);
-    final remaining = MemoriesScreen.maxPhotos - _sessions.length;
-    if (remaining <= 0) {
-      _snack(l.memoriesLimitReached(MemoriesScreen.maxPhotos));
-      return;
-    }
-
     setState(() => _busy = true);
     try {
       final picked = await _picker.pickMultiImage();
       if (picked.isEmpty) return;
 
-      final toAdd = picked.take(remaining).toList();
       final repo = ref.read(puzzleRepositoryProvider);
-      for (final image in toAdd) {
+      for (final image in picked) {
         await repo.createSession(
           sourceImage: File(image.path),
           difficulty: PuzzleDifficulty.easy,
         );
       }
-
-      if (picked.length > remaining) {
-        _snack(l.memoriesPartiallyAdded(remaining, MemoriesScreen.maxPhotos));
-      }
       await _load();
     } catch (e) {
-      _snack(l.memoriesAddError('$e'));
+      if (mounted) {
+        _snack(AppLocalizations.of(context).memoriesAddError('$e'));
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -145,7 +132,6 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final isFull = _sessions.length >= MemoriesScreen.maxPhotos;
     return Scaffold(
       appBar: AppBar(
         leading: widget.onMenu == null
@@ -158,14 +144,11 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
         title: Text(
           _sessions.isEmpty
               ? l.memoriesTitle
-              : l.memoriesTitleCount(
-                  _sessions.length,
-                  MemoriesScreen.maxPhotos,
-                ),
+              : l.memoriesCountTitle(_sessions.length),
         ),
         actions: [
           IconButton(
-            onPressed: (_busy || isFull) ? null : _addPhotos,
+            onPressed: _busy ? null : _addPhotos,
             icon: const Icon(Icons.add_a_photo_outlined),
             tooltip: l.memoriesAdd,
           ),
@@ -462,7 +445,7 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              l.memoriesEmptyBody(MemoriesScreen.maxPhotos),
+              l.memoriesEmptyBody,
               style: theme.textTheme.bodyMedium
                   ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,

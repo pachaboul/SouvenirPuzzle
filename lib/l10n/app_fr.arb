@@ -51,7 +51,7 @@
   "victoryNewMemory": "Nouveau souvenir",
 
   "memoriesTitle": "Mes souvenirs",
-  "memoriesTitleCount": "Mes souvenirs ({count}/{max})",
+  "memoriesCountTitle": "Mes souvenirs ({count})",
   "memoriesAdd": "Ajouter des photos",
   "memoriesPlay": "Jouer",
   "memoriesLimitReached": "Limite de {max} photos atteinte.",
@@ -62,7 +62,7 @@
   "memoriesPlayedTimes": "{count, plural, =0{Jamais jouée} =1{Joué 1 fois} other{Joué {count} fois}}",
   "memoriesReadyToPlay": "Photo prête à jouer",
   "memoriesEmptyTitle": "Aucun souvenir pour l'instant",
-  "memoriesEmptyBody": "Ajoutez jusqu'à {max} photos, puis touchez « Jouer » pour un puzzle au hasard.",
+  "memoriesEmptyBody": "Ajoutez vos photos, puis touchez « Jouer » pour un puzzle au hasard.",
 
   "settingsSectionGame": "Jeu",
   "settingsSound": "Son",
