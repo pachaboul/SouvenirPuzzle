@@ -503,13 +503,15 @@ class _DetailsSheet extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                OutlinedButton.icon(
-                  onPressed: onDelete,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: theme.colorScheme.error,
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: onDelete,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: theme.colorScheme.error,
+                    ),
+                    icon: const Icon(Icons.delete_outline),
+                    label: Text(l.commonDelete),
                   ),
-                  icon: const Icon(Icons.delete_outline),
-                  label: Text(l.commonDelete),
                 ),
               ],
             ),
