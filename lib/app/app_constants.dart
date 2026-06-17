@@ -3,7 +3,7 @@ class AppConstants {
   AppConstants._();
 
   static const String appName = 'Souvenir Puzzle';
-  static const String version = '1.1.0';
+  static const String version = '1.2.0';
   static const String tagline =
       'Transformez vos photos en puzzles et revivez vos souvenirs pièce par pièce.';
 
