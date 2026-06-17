@@ -8,6 +8,7 @@ import '../../../data/models/app_settings.dart';
 import '../../../data/repositories/puzzle_providers.dart';
 import '../../../data/repositories/settings_providers.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../contact/presentation/contact_screen.dart';
 
 /// Lets the user adjust sound, vibration, theme, language, privacy and history.
 class SettingsScreen extends ConsumerWidget {
@@ -165,6 +166,27 @@ class SettingsScreen extends ConsumerWidget {
                 ],
               ),
             ),
+            GlassCard(
+              padding: EdgeInsets.zero,
+              borderRadius: 18,
+              child: ListTile(
+                leading: const Icon(Icons.support_agent_outlined,
+                    color: Colors.white),
+                title: Text(
+                  l.contactTitle,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                trailing:
+                    const Icon(Icons.chevron_right, color: Colors.white54),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ContactScreen()),
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
             GlassCard(
               padding: EdgeInsets.zero,
               tint: AppColors.rouge,

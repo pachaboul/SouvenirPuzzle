@@ -98,5 +98,15 @@
   "navHome": "Home",
   "homePlay": "Play",
   "playNeedsPhotos": "Add photos in My memories first.",
-  "menu": "Menu"
+  "menu": "Menu",
+
+  "contactTitle": "Contact & support",
+  "contactIntro": "A question, an idea, or just want to say hi? Reach out — and if you enjoy Souvenir Puzzle, you can offer me a coffee.",
+  "contactSectionContact": "Contact",
+  "contactEmailLabel": "Email",
+  "contactSectionCoffee": "Offer me a coffee",
+  "contactOrangeMoney": "Orange Money",
+  "contactPaypal": "PayPal",
+  "contactCopied": "Copied to clipboard",
+  "contactCouldNotOpen": "Couldn't open the app"
 }

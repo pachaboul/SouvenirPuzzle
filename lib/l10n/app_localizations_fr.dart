@@ -274,4 +274,32 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get menu => 'Menu';
+
+  @override
+  String get contactTitle => 'Contact & support';
+
+  @override
+  String get contactIntro =>
+      'Une question, une idée, ou juste envie de dire bonjour ? Écrivez-moi — et si vous aimez Souvenir Puzzle, vous pouvez m\'offrir un café.';
+
+  @override
+  String get contactSectionContact => 'Contact';
+
+  @override
+  String get contactEmailLabel => 'Email';
+
+  @override
+  String get contactSectionCoffee => 'Offrez-moi un café';
+
+  @override
+  String get contactOrangeMoney => 'Orange Money';
+
+  @override
+  String get contactPaypal => 'PayPal';
+
+  @override
+  String get contactCopied => 'Copié dans le presse-papiers';
+
+  @override
+  String get contactCouldNotOpen => 'Impossible d\'ouvrir l\'application';
 }

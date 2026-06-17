@@ -565,6 +565,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Menu'**
   String get menu;
+
+  /// No description provided for @contactTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact & support'**
+  String get contactTitle;
+
+  /// No description provided for @contactIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'A question, an idea, or just want to say hi? Reach out — and if you enjoy Souvenir Puzzle, you can offer me a coffee.'**
+  String get contactIntro;
+
+  /// No description provided for @contactSectionContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get contactSectionContact;
+
+  /// No description provided for @contactEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get contactEmailLabel;
+
+  /// No description provided for @contactSectionCoffee.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer me a coffee'**
+  String get contactSectionCoffee;
+
+  /// No description provided for @contactOrangeMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Orange Money'**
+  String get contactOrangeMoney;
+
+  /// No description provided for @contactPaypal.
+  ///
+  /// In en, this message translates to:
+  /// **'PayPal'**
+  String get contactPaypal;
+
+  /// No description provided for @contactCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard'**
+  String get contactCopied;
+
+  /// No description provided for @contactCouldNotOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the app'**
+  String get contactCouldNotOpen;
 }
 
 class _AppLocalizationsDelegate

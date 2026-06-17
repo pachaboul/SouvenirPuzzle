@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/theme.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../contact/presentation/contact_screen.dart';
 import '../../home/presentation/home_screen.dart';
 import '../../memories/presentation/memories_screen.dart';
 import '../../settings/presentation/settings_screen.dart';
@@ -52,7 +53,18 @@ class _MainShellState extends State<MainShell> {
     return Scaffold(
       key: _scaffoldKey,
       extendBody: true,
-      drawer: _AppDrawer(currentIndex: _index, onSelect: _go),
+      drawer: _AppDrawer(
+        currentIndex: _index,
+        onSelect: _go,
+        onContact: () {
+          if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
+            Navigator.of(context).pop();
+          }
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const ContactScreen()),
+          );
+        },
+      ),
       body: IndexedStack(
         index: _index,
         children: [
@@ -190,10 +202,15 @@ class _NavItem extends StatelessWidget {
 
 /// Dark, premium drawer with gold "pill" navigation items.
 class _AppDrawer extends StatelessWidget {
-  const _AppDrawer({required this.currentIndex, required this.onSelect});
+  const _AppDrawer({
+    required this.currentIndex,
+    required this.onSelect,
+    required this.onContact,
+  });
 
   final int currentIndex;
   final void Function(int) onSelect;
+  final VoidCallback onContact;
 
   @override
   Widget build(BuildContext context) {
@@ -265,6 +282,13 @@ class _AppDrawer extends StatelessWidget {
                 label: l.settingsTitle,
                 selected: currentIndex == 2,
                 onTap: () => onSelect(2),
+              ),
+              const SizedBox(height: 4),
+              _DrawerItem(
+                icon: Icons.support_agent_outlined,
+                label: l.contactTitle,
+                selected: false,
+                onTap: onContact,
               ),
               const Spacer(),
               Padding(

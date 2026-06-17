@@ -273,4 +273,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get menu => 'Menu';
+
+  @override
+  String get contactTitle => 'Contact & support';
+
+  @override
+  String get contactIntro =>
+      'A question, an idea, or just want to say hi? Reach out — and if you enjoy Souvenir Puzzle, you can offer me a coffee.';
+
+  @override
+  String get contactSectionContact => 'Contact';
+
+  @override
+  String get contactEmailLabel => 'Email';
+
+  @override
+  String get contactSectionCoffee => 'Offer me a coffee';
+
+  @override
+  String get contactOrangeMoney => 'Orange Money';
+
+  @override
+  String get contactPaypal => 'PayPal';
+
+  @override
+  String get contactCopied => 'Copied to clipboard';
+
+  @override
+  String get contactCouldNotOpen => 'Couldn\'t open the app';
 }
