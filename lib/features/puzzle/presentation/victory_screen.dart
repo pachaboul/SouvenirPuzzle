@@ -8,7 +8,6 @@ import '../../../app/theme.dart';
 import '../../../data/models/puzzle_session_model.dart';
 import '../../../data/repositories/puzzle_providers.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../difficulty/presentation/difficulty_chooser.dart';
 import '../domain/puzzle_difficulty.dart';
 import 'puzzle_screen.dart';
 
@@ -36,23 +35,17 @@ class VictoryScreen extends ConsumerWidget {
     );
   }
 
-  /// Picks another random memory and plays it (difficulty chosen at play time).
+  /// Picks another random memory and plays it at the same difficulty.
   Future<void> _next(BuildContext context, WidgetRef ref) async {
-    final repo = ref.read(puzzleRepositoryProvider);
-    final sessions = await repo.getSessions();
-    if (sessions.isEmpty) return;
+    final sessions = await ref.read(puzzleRepositoryProvider).getSessions();
+    if (sessions.isEmpty || !context.mounted) return;
     final others = sessions.where((s) => s.id != session.id).toList();
     final pool = others.isEmpty ? sessions : others;
     final next = pool[Random().nextInt(pool.length)];
 
-    final wins = await repo.winsByDifficulty();
-    if (!context.mounted) return;
-    final chosen = await showDifficultyChooser(context, wins);
-    if (chosen == null || !context.mounted) return;
-
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (_) => PuzzleScreen(session: next, difficulty: chosen),
+        builder: (_) => PuzzleScreen(session: next, difficulty: difficulty),
       ),
     );
   }

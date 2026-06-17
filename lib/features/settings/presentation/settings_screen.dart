@@ -63,6 +63,7 @@ class SettingsScreen extends ConsumerWidget {
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (e, _) => Center(child: Text(l.errorPrefix('$e'))),
           data: (settings) => ListView(
+            padding: const EdgeInsets.only(bottom: 96),
             children: [
               _SectionTitle(l.settingsSectionGame),
               SwitchListTile(
