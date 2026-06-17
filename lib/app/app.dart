@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/repositories/settings_providers.dart';
 import '../features/splash/presentation/splash_screen.dart';
+import '../l10n/app_localizations.dart';
 import 'app_constants.dart';
 import 'theme.dart';
 
@@ -12,14 +14,22 @@ class SouvenirPuzzleApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(settingsControllerProvider).asData?.value.themeMode ??
-        ThemeMode.light;
+    final settings = ref.watch(settingsControllerProvider).asData?.value;
+
     return MaterialApp(
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
-      themeMode: themeMode,
+      themeMode: settings?.themeMode ?? ThemeMode.light,
+      locale: settings?.language.locale,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
       home: const SplashScreen(),
     );
   }

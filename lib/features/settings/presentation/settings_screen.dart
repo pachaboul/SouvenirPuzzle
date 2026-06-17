@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../data/models/app_settings.dart';
 import '../../../data/repositories/puzzle_providers.dart';
 import '../../../data/repositories/settings_providers.dart';
+import '../../../l10n/app_localizations.dart';
 
-/// Lets the user adjust sound, vibration, theme, privacy and clear history.
+/// Lets the user adjust sound, vibration, theme, language, privacy and history.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   Future<void> _clearHistory(BuildContext context, WidgetRef ref) async {
+    final l = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Effacer tous les souvenirs ?'),
-        content: const Text(
-          'Tous vos puzzles et leurs miniatures seront supprimés. '
-          'Vos photos d\'origine ne sont pas touchées.',
-        ),
+        title: Text(l.settingsClearTitle),
+        content: Text(l.settingsClearBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Annuler'),
+            child: Text(l.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Effacer'),
+            child: Text(l.commonErase),
           ),
         ],
       ),
@@ -33,57 +33,58 @@ class SettingsScreen extends ConsumerWidget {
     await ref.read(puzzleRepositoryProvider).clearAllSessions();
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Souvenirs effacés.')),
+      SnackBar(content: Text(l.settingsCleared)),
     );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context);
     final settingsAsync = ref.watch(settingsControllerProvider);
     final controller = ref.read(settingsControllerProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Paramètres')),
+      appBar: AppBar(title: Text(l.settingsTitle)),
       body: SafeArea(
         child: settingsAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => Center(child: Text('Erreur : $e')),
+          error: (e, _) => Center(child: Text(l.errorPrefix('$e'))),
           data: (settings) => ListView(
             children: [
-              const _SectionTitle('Jeu'),
+              _SectionTitle(l.settingsSectionGame),
               SwitchListTile(
                 secondary: const Icon(Icons.volume_up_outlined),
-                title: const Text('Son'),
+                title: Text(l.settingsSound),
                 value: settings.soundEnabled,
                 onChanged: controller.setSoundEnabled,
               ),
               SwitchListTile(
                 secondary: const Icon(Icons.vibration),
-                title: const Text('Vibration'),
+                title: Text(l.settingsVibration),
                 value: settings.vibrationEnabled,
                 onChanged: controller.setVibrationEnabled,
               ),
               const Divider(height: 32),
-              const _SectionTitle('Apparence'),
+              _SectionTitle(l.settingsSectionAppearance),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: SegmentedButton<ThemeMode>(
-                  segments: const [
+                  segments: [
                     ButtonSegment(
                       value: ThemeMode.light,
-                      icon: Icon(Icons.light_mode_outlined),
-                      label: Text('Clair'),
+                      icon: const Icon(Icons.light_mode_outlined),
+                      label: Text(l.themeLight),
                     ),
                     ButtonSegment(
                       value: ThemeMode.dark,
-                      icon: Icon(Icons.dark_mode_outlined),
-                      label: Text('Sombre'),
+                      icon: const Icon(Icons.dark_mode_outlined),
+                      label: Text(l.themeDark),
                     ),
                     ButtonSegment(
                       value: ThemeMode.system,
-                      icon: Icon(Icons.brightness_auto_outlined),
-                      label: Text('Système'),
+                      icon: const Icon(Icons.brightness_auto_outlined),
+                      label: Text(l.themeSystem),
                     ),
                   ],
                   selected: {settings.themeMode},
@@ -91,8 +92,32 @@ class SettingsScreen extends ConsumerWidget {
                       controller.setThemeMode(selection.first),
                 ),
               ),
+              const SizedBox(height: 16),
+              _SectionTitle(l.settingsLanguage),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SegmentedButton<AppLanguage>(
+                  segments: [
+                    ButtonSegment(
+                      value: AppLanguage.system,
+                      label: Text(l.languageSystem),
+                    ),
+                    ButtonSegment(
+                      value: AppLanguage.french,
+                      label: Text(l.languageFrench),
+                    ),
+                    ButtonSegment(
+                      value: AppLanguage.english,
+                      label: Text(l.languageEnglish),
+                    ),
+                  ],
+                  selected: {settings.language},
+                  onSelectionChanged: (selection) =>
+                      controller.setLanguage(selection.first),
+                ),
+              ),
               const Divider(height: 32),
-              const _SectionTitle('Confidentialité'),
+              _SectionTitle(l.settingsSectionPrivacy),
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Card(
@@ -105,9 +130,7 @@ class SettingsScreen extends ConsumerWidget {
                         const SizedBox(width: 16),
                         Expanded(
                           child: Text(
-                            'Votre vie privée compte. Souvenir Puzzle ne '
-                            'téléverse pas vos photos : tout reste sur votre '
-                            'téléphone.',
+                            l.settingsPrivacyText,
                             style: theme.textTheme.bodyMedium,
                           ),
                         ),
@@ -121,7 +144,7 @@ class SettingsScreen extends ConsumerWidget {
                 leading: Icon(Icons.delete_outline,
                     color: theme.colorScheme.error),
                 title: Text(
-                  'Effacer tous les souvenirs',
+                  l.settingsClearHistory,
                   style: TextStyle(color: theme.colorScheme.error),
                 ),
                 onTap: () => _clearHistory(context, ref),

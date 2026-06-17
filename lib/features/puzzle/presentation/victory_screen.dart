@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme.dart';
 import '../../../data/models/puzzle_session_model.dart';
 import '../../../data/repositories/puzzle_providers.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../difficulty/presentation/difficulty_chooser.dart';
 import '../domain/puzzle_difficulty.dart';
 import 'puzzle_screen.dart';
@@ -58,6 +59,7 @@ class VictoryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.bleuNuit,
       body: SafeArea(
@@ -83,20 +85,23 @@ class VictoryScreen extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      const Text(
-                        'Félicitations !',
+                      Text(
+                        l.victoryTitle,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppColors.or,
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        'Souvenir complété.',
+                      Text(
+                        l.victorySubtitle,
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white70, fontSize: 16),
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 16,
+                        ),
                       ),
                       const SizedBox(height: 24),
                       Row(
@@ -104,12 +109,12 @@ class VictoryScreen extends ConsumerWidget {
                         children: [
                           _ResultStat(
                             icon: Icons.timer_outlined,
-                            label: 'Temps',
+                            label: l.statTime,
                             value: formatDuration(seconds),
                           ),
                           _ResultStat(
                             icon: Icons.swap_horiz,
-                            label: 'Mouvements',
+                            label: l.statMoves,
                             value: '$moves',
                           ),
                         ],
@@ -129,7 +134,7 @@ class VictoryScreen extends ConsumerWidget {
                       ),
                       onPressed: () => _replay(context),
                       icon: const Icon(Icons.refresh),
-                      label: const Text('Rejouer'),
+                      label: Text(l.commonReplay),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -141,7 +146,7 @@ class VictoryScreen extends ConsumerWidget {
                       ),
                       onPressed: () => _next(context, ref),
                       icon: const Icon(Icons.skip_next),
-                      label: const Text('Suivant'),
+                      label: Text(l.victoryNext),
                     ),
                   ),
                 ],
@@ -152,7 +157,7 @@ class VictoryScreen extends ConsumerWidget {
                 onPressed: () =>
                     Navigator.of(context).popUntil((route) => route.isFirst),
                 icon: const Icon(Icons.home_outlined),
-                label: const Text('Nouveau souvenir'),
+                label: Text(l.victoryNewMemory),
               ),
               const SizedBox(height: 8),
             ],

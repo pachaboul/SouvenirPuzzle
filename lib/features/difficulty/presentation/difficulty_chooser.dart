@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../../app/theme.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../l10n/l10n_difficulty.dart';
 import '../../puzzle/domain/level_progression.dart';
 import '../../puzzle/domain/puzzle_difficulty.dart';
 
@@ -37,7 +39,7 @@ class _DifficultyChooserSheet extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: Text(
-                'Choisissez un niveau',
+                AppLocalizations.of(context).difficultyChoose,
                 style: theme.textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
@@ -80,6 +82,7 @@ class DifficultyLevelTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context);
     final accent = AppColors.difficulty(difficulty);
     final progress =
         (min(wins, LevelProgression.winsPerLevel) / LevelProgression.winsPerLevel)
@@ -117,7 +120,7 @@ class DifficultyLevelTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${difficulty.label} · ${difficulty.gridSize}×${difficulty.gridSize}',
+                  '${difficulty.label(l)} · ${difficulty.gridSize}×${difficulty.gridSize}',
                   style: theme.textTheme.titleMedium
                       ?.copyWith(fontWeight: FontWeight.w600),
                 ),
@@ -133,14 +136,14 @@ class DifficultyLevelTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '$wins / ${LevelProgression.winsPerLevel} victoires',
+                    l.winsProgress(wins, LevelProgression.winsPerLevel),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ] else
                   Text(
-                    _lockHint(),
+                    _lockHint(l),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
@@ -162,10 +165,9 @@ class DifficultyLevelTile extends StatelessWidget {
     );
   }
 
-  String _lockHint() {
+  String _lockHint(AppLocalizations l) {
     final required = LevelProgression.prerequisite(difficulty);
-    if (required == null) return 'Verrouillé';
-    return 'Gagnez ${LevelProgression.winsPerLevel} parties en '
-        '${required.label} pour débloquer';
+    if (required == null) return l.locked;
+    return l.lockHint(LevelProgression.winsPerLevel, required.label(l));
   }
 }

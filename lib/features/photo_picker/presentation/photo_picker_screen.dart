@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../../app/app_constants.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../difficulty/presentation/difficulty_screen.dart';
 
 /// Lets the user pick a photo from the gallery and preview it before continuing.
@@ -29,7 +29,9 @@ class _PhotoPickerScreenState extends State<PhotoPickerScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Impossible d\'ouvrir la galerie : $e')),
+          SnackBar(
+            content: Text(AppLocalizations.of(context).photoGalleryError('$e')),
+          ),
         );
       }
     } finally {
@@ -48,9 +50,10 @@ class _PhotoPickerScreenState extends State<PhotoPickerScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context);
     final image = _image;
     return Scaffold(
-      appBar: AppBar(title: const Text('Choisir une photo')),
+      appBar: AppBar(title: Text(l.photoTitle)),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -75,7 +78,7 @@ class _PhotoPickerScreenState extends State<PhotoPickerScreen> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      AppConstants.privacyNote,
+                      l.photoPrivacyNote,
                       style: theme.textTheme.bodySmall
                           ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                     ),
@@ -86,14 +89,12 @@ class _PhotoPickerScreenState extends State<PhotoPickerScreen> {
               OutlinedButton.icon(
                 onPressed: _picking ? null : _pick,
                 icon: const Icon(Icons.photo_library_outlined),
-                label: Text(
-                  image == null ? 'Choisir une photo' : 'Changer de photo',
-                ),
+                label: Text(image == null ? l.photoChoose : l.photoChange),
               ),
               const SizedBox(height: 12),
               FilledButton(
                 onPressed: image == null ? null : _continue,
-                child: const Text('Continuer'),
+                child: Text(l.commonContinue),
               ),
             ],
           ),
@@ -127,7 +128,7 @@ class _PhotoPlaceholder extends StatelessWidget {
                 size: 72, color: theme.colorScheme.primary),
             const SizedBox(height: 16),
             Text(
-              'Touchez pour choisir une photo',
+              AppLocalizations.of(context).photoTapToChoose,
               textAlign: TextAlign.center,
               style: theme.textTheme.titleMedium,
             ),

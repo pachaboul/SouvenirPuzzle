@@ -9,6 +9,8 @@ import '../../../app/theme.dart';
 import '../../../data/models/best_score.dart';
 import '../../../data/models/puzzle_session_model.dart';
 import '../../../data/repositories/puzzle_providers.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../l10n/l10n_difficulty.dart';
 import '../../difficulty/presentation/difficulty_chooser.dart';
 import '../../puzzle/domain/level_progression.dart';
 import '../../puzzle/domain/puzzle_difficulty.dart';
@@ -62,9 +64,10 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
   }
 
   Future<void> _addPhotos() async {
+    final l = AppLocalizations.of(context);
     final remaining = MemoriesScreen.maxPhotos - _sessions.length;
     if (remaining <= 0) {
-      _snack('Limite de ${MemoriesScreen.maxPhotos} photos atteinte.');
+      _snack(l.memoriesLimitReached(MemoriesScreen.maxPhotos));
       return;
     }
 
@@ -83,14 +86,11 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
       }
 
       if (picked.length > remaining) {
-        _snack(
-          '$remaining photo(s) ajoutée(s) — limite de '
-          '${MemoriesScreen.maxPhotos} atteinte.',
-        );
+        _snack(l.memoriesPartiallyAdded(remaining, MemoriesScreen.maxPhotos));
       }
       await _load();
     } catch (e) {
-      _snack('Impossible d\'ajouter les photos : $e');
+      _snack(l.memoriesAddError('$e'));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -116,22 +116,20 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
   }
 
   Future<void> _confirmDelete(PuzzleSessionModel session) async {
+    final l = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Supprimer ce souvenir ?'),
-        content: const Text(
-          'Le puzzle et sa miniature seront supprimés. '
-          'Votre photo d\'origine n\'est pas touchée.',
-        ),
+        title: Text(l.memoriesDeleteTitle),
+        content: Text(l.memoriesDeleteBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Annuler'),
+            child: Text(l.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Supprimer'),
+            child: Text(l.commonDelete),
           ),
         ],
       ),
@@ -143,19 +141,23 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final isFull = _sessions.length >= MemoriesScreen.maxPhotos;
     return Scaffold(
       appBar: AppBar(
         title: Text(
           _sessions.isEmpty
-              ? 'Mes souvenirs'
-              : 'Mes souvenirs (${_sessions.length}/${MemoriesScreen.maxPhotos})',
+              ? l.memoriesTitle
+              : l.memoriesTitleCount(
+                  _sessions.length,
+                  MemoriesScreen.maxPhotos,
+                ),
         ),
         actions: [
           IconButton(
             onPressed: (_busy || isFull) ? null : _addPhotos,
             icon: const Icon(Icons.add_a_photo_outlined),
-            tooltip: 'Ajouter des photos',
+            tooltip: l.memoriesAdd,
           ),
         ],
       ),
@@ -164,7 +166,7 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
           : FloatingActionButton.extended(
               onPressed: _busy ? null : _playRandom,
               icon: const Icon(Icons.shuffle),
-              label: const Text('Jouer'),
+              label: Text(l.memoriesPlay),
             ),
       body: SafeArea(child: _buildBody()),
     );
@@ -246,6 +248,7 @@ class _LevelChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context);
     final accent = AppColors.difficulty(difficulty);
     final progress = (min(wins, LevelProgression.winsPerLevel) /
             LevelProgression.winsPerLevel)
@@ -255,7 +258,7 @@ class _LevelChip extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            difficulty.label,
+            difficulty.label(l),
             style: theme.textTheme.labelMedium?.copyWith(
               fontWeight: FontWeight.w600,
               color: unlocked ? accent : theme.colorScheme.onSurfaceVariant,
@@ -311,13 +314,13 @@ class _MemoryCard extends StatelessWidget {
   final VoidCallback onPlay;
   final VoidCallback onDelete;
 
-  String get _title => session.playCount > 0
-      ? 'Joué ${session.playCount} fois'
-      : 'Photo prête à jouer';
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context);
+    final title = session.playCount > 0
+        ? l.memoriesPlayedTimes(session.playCount)
+        : l.memoriesReadyToPlay;
     final thumbPath = session.thumbnailPath;
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -349,7 +352,7 @@ class _MemoryCard extends StatelessWidget {
                   const SizedBox(width: 16),
                   Expanded(
                     child: Text(
-                      _title,
+                      title,
                       style: theme.textTheme.titleMedium
                           ?.copyWith(fontWeight: FontWeight.w600),
                     ),
@@ -357,12 +360,12 @@ class _MemoryCard extends StatelessWidget {
                   IconButton(
                     onPressed: onPlay,
                     icon: const Icon(Icons.play_arrow),
-                    tooltip: 'Jouer',
+                    tooltip: l.memoriesPlay,
                   ),
                   IconButton(
                     onPressed: onDelete,
                     icon: const Icon(Icons.delete_outline),
-                    tooltip: 'Supprimer',
+                    tooltip: l.commonDelete,
                   ),
                 ],
               ),
@@ -396,11 +399,12 @@ class _BestPerLevel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context);
     final value = best == null ? '—' : _formatSeconds(best!.timeSeconds);
     return Column(
       children: [
         Text(
-          difficulty.label,
+          difficulty.label(l),
           style: theme.textTheme.labelSmall
               ?.copyWith(color: AppColors.difficulty(difficulty)),
         ),
@@ -428,6 +432,7 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -441,14 +446,13 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Aucun souvenir pour l\'instant',
+              l.memoriesEmptyTitle,
               style: theme.textTheme.titleMedium,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
-              'Ajoutez jusqu\'à ${MemoriesScreen.maxPhotos} photos, '
-              'puis touchez « Jouer » pour un puzzle au hasard.',
+              l.memoriesEmptyBody(MemoriesScreen.maxPhotos),
               style: theme.textTheme.bodyMedium
                   ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
@@ -457,7 +461,7 @@ class _EmptyState extends StatelessWidget {
             FilledButton.icon(
               onPressed: onAdd,
               icon: const Icon(Icons.add_a_photo_outlined),
-              label: const Text('Ajouter des photos'),
+              label: Text(l.memoriesAdd),
             ),
           ],
         ),

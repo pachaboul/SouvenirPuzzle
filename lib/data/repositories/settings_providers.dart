@@ -36,4 +36,9 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     await _repo.setThemeMode(mode);
     state = AsyncData(_current.copyWith(themeMode: mode));
   }
+
+  Future<void> setLanguage(AppLanguage language) async {
+    await _repo.setLanguage(language);
+    state = AsyncData(_current.copyWith(language: language));
+  }
 }

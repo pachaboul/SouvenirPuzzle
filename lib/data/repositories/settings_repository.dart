@@ -13,6 +13,7 @@ class SettingsRepository {
   static const String _kSound = 'sound_enabled';
   static const String _kVibration = 'vibration_enabled';
   static const String _kTheme = 'theme_mode';
+  static const String _kLanguage = 'language';
 
   Future<AppSettings> load() async {
     final map = await _dao.getAll();
@@ -20,6 +21,7 @@ class SettingsRepository {
       soundEnabled: (map[_kSound] ?? 'true') != 'false',
       vibrationEnabled: (map[_kVibration] ?? 'true') != 'false',
       themeMode: _parseThemeMode(map[_kTheme]),
+      language: _parseLanguage(map[_kLanguage]),
     );
   }
 
@@ -30,6 +32,9 @@ class SettingsRepository {
 
   Future<void> setThemeMode(ThemeMode mode) => _dao.set(_kTheme, mode.name);
 
+  Future<void> setLanguage(AppLanguage language) =>
+      _dao.set(_kLanguage, language.name);
+
   ThemeMode _parseThemeMode(String? value) {
     switch (value) {
       case 'dark':
@@ -39,5 +44,12 @@ class SettingsRepository {
       default:
         return ThemeMode.light;
     }
+  }
+
+  AppLanguage _parseLanguage(String? value) {
+    return AppLanguage.values.firstWhere(
+      (l) => l.name == value,
+      orElse: () => AppLanguage.system,
+    );
   }
 }

@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../../app/app_constants.dart';
 import '../../../app/theme.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../home/presentation/home_screen.dart';
 
 /// Premium Bleu Nuit splash shown briefly at startup (charte §12).
@@ -36,6 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.bleuNuit,
       body: Center(
@@ -52,18 +53,18 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
-              AppConstants.appName,
-              style: TextStyle(
+            Text(
+              l.appName,
+              style: const TextStyle(
                 color: AppColors.or,
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Chaque pièce raconte une histoire.',
-              style: TextStyle(color: Colors.white70, fontSize: 14),
+            Text(
+              l.splashTagline,
+              style: const TextStyle(color: Colors.white70, fontSize: 14),
             ),
           ],
         ),

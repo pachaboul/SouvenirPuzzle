@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/repositories/puzzle_providers.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../puzzle/domain/level_progression.dart';
 import '../../puzzle/domain/puzzle_difficulty.dart';
 import '../../puzzle/presentation/puzzle_screen.dart';
@@ -60,7 +61,7 @@ class _DifficultyScreenState extends ConsumerState<DifficultyScreen> {
       if (!mounted) return;
       setState(() => _creating = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Impossible de créer le puzzle : $e')),
+        SnackBar(content: Text(AppLocalizations.of(context).createError('$e'))),
       );
     }
   }
@@ -68,8 +69,9 @@ class _DifficultyScreenState extends ConsumerState<DifficultyScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Difficulté')),
+      appBar: AppBar(title: Text(l.difficultyTitle)),
       body: SafeArea(
         child: _loading
             ? const Center(child: CircularProgressIndicator())
@@ -95,7 +97,7 @@ class _DifficultyScreenState extends ConsumerState<DifficultyScreen> {
                             ),
                             const SizedBox(height: 24),
                             Text(
-                              'Choisissez un niveau',
+                              l.difficultyChoose,
                               style: theme.textTheme.titleLarge,
                             ),
                             const SizedBox(height: 12),
@@ -130,7 +132,7 @@ class _DifficultyScreenState extends ConsumerState<DifficultyScreen> {
                               width: 24,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Commencer'),
+                          : Text(l.commonStart),
                     ),
                   ],
                 ),

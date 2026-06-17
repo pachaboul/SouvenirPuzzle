@@ -7,8 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/app_constants.dart';
 import '../../../app/theme.dart';
+import '../../../core/services/feedback_service.dart';
+import '../../../data/models/app_settings.dart';
 import '../../../data/models/puzzle_session_model.dart';
 import '../../../data/repositories/puzzle_providers.dart';
+import '../../../data/repositories/settings_providers.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../l10n/l10n_difficulty.dart';
 import '../domain/puzzle_difficulty.dart';
 import '../domain/puzzle_game.dart';
 import 'puzzle_board.dart';
@@ -65,9 +70,24 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen> {
     });
   }
 
+  FeedbackService get _feedback {
+    final settings =
+        ref.read(settingsControllerProvider).asData?.value ??
+            const AppSettings();
+    return FeedbackService(
+      soundEnabled: settings.soundEnabled,
+      vibrationEnabled: settings.vibrationEnabled,
+    );
+  }
+
   void _onSwap(int a, int b) {
     setState(() => _game.swap(a, b));
-    if (_game.isSolved) _onSolved();
+    if (_game.isSolved) {
+      _feedback.victory();
+      _onSolved();
+    } else {
+      _feedback.pieceMoved();
+    }
   }
 
   Future<void> _onSolved() async {
@@ -109,6 +129,7 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen> {
   }
 
   void _showPreview() {
+    final l = AppLocalizations.of(context);
     showDialog<void>(
       context: context,
       builder: (context) => Dialog(
@@ -127,7 +148,7 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen> {
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Fermer'),
+              child: Text(l.commonClose),
             ),
           ],
         ),
@@ -144,27 +165,28 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.bleuNuit,
       appBar: AppBar(
         backgroundColor: AppColors.bleuNuit,
         foregroundColor: AppColors.cremeDoux,
-        title: Text(_difficulty.label),
+        title: Text(_difficulty.label(l)),
         actions: [
           IconButton(
             onPressed: _showPreview,
             icon: const Icon(Icons.image_outlined),
-            tooltip: 'Aperçu',
+            tooltip: l.puzzlePreview,
           ),
           IconButton(
             onPressed: _togglePause,
             icon: Icon(_paused ? Icons.play_arrow : Icons.pause),
-            tooltip: _paused ? 'Reprendre' : 'Pause',
+            tooltip: _paused ? l.puzzleResume : l.puzzlePause,
           ),
           IconButton(
             onPressed: _restart,
             icon: const Icon(Icons.refresh),
-            tooltip: 'Recommencer',
+            tooltip: l.puzzleRestart,
           ),
         ],
       ),
@@ -179,10 +201,10 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen> {
             }
             final image = snapshot.data;
             if (snapshot.hasError || image == null) {
-              return const Center(
+              return Center(
                 child: Text(
-                  'Erreur de chargement de l\'image',
-                  style: TextStyle(color: Colors.white70),
+                  l.puzzleImageError,
+                  style: const TextStyle(color: Colors.white70),
                 ),
               );
             }
@@ -266,15 +288,16 @@ class _PauseOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return ColoredBox(
       color: Colors.black54,
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'En pause',
-              style: TextStyle(
+            Text(
+              l.puzzlePaused,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -284,7 +307,7 @@ class _PauseOverlay extends StatelessWidget {
             FilledButton.icon(
               onPressed: onResume,
               icon: const Icon(Icons.play_arrow),
-              label: const Text('Reprendre'),
+              label: Text(l.puzzleResume),
             ),
           ],
         ),

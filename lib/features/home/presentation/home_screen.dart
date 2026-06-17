@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../app/app_constants.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../memories/presentation/memories_screen.dart';
 import '../../photo_picker/presentation/photo_picker_screen.dart';
 import '../../settings/presentation/settings_screen.dart';
@@ -12,6 +12,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context);
     return Scaffold(
       body: SafeArea(
         child: LayoutBuilder(
@@ -36,14 +37,14 @@ class HomeScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 24),
                       Text(
-                        AppConstants.appName,
+                        l.appName,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.headlineMedium
                             ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        AppConstants.tagline,
+                        l.homeTagline,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,
@@ -57,7 +58,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         icon: const Icon(Icons.add_photo_alternate_outlined),
-                        label: const Text('Créer un puzzle'),
+                        label: Text(l.homeCreatePuzzle),
                       ),
                       const SizedBox(height: 12),
                       OutlinedButton.icon(
@@ -67,7 +68,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         icon: const Icon(Icons.photo_library_outlined),
-                        label: const Text('Mes souvenirs'),
+                        label: Text(l.homeMyMemories),
                       ),
                       const SizedBox(height: 12),
                       TextButton.icon(
@@ -77,7 +78,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         icon: const Icon(Icons.settings_outlined),
-                        label: const Text('Paramètres'),
+                        label: Text(l.settingsTitle),
                       ),
                       const SizedBox(height: 24),
                     ],
