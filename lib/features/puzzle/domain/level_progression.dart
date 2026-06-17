@@ -7,7 +7,11 @@ import 'puzzle_difficulty.dart';
 class LevelProgression {
   LevelProgression._();
 
-  static const int winsPerLevel = 12;
+  /// Wins needed in a level to unlock the next one.
+  static const int winsToUnlock = 33;
+
+  /// Target number of matches per level (the level's completion goal).
+  static const int matchesPerLevel = 99;
 
   /// The level whose wins gate [difficulty] (null for the first level).
   static PuzzleDifficulty? prerequisite(PuzzleDifficulty difficulty) {
@@ -18,6 +22,10 @@ class LevelProgression {
         return PuzzleDifficulty.easy;
       case PuzzleDifficulty.hard:
         return PuzzleDifficulty.medium;
+      case PuzzleDifficulty.expert:
+        return PuzzleDifficulty.hard;
+      case PuzzleDifficulty.master:
+        return PuzzleDifficulty.expert;
     }
   }
 
@@ -28,6 +36,6 @@ class LevelProgression {
   ) {
     final required = prerequisite(difficulty);
     if (required == null) return true;
-    return (wins[required] ?? 0) >= winsPerLevel;
+    return (wins[required] ?? 0) >= winsToUnlock;
   }
 }

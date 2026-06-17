@@ -17,6 +17,7 @@ Future<PuzzleDifficulty?> showDifficultyChooser(
   return showModalBottomSheet<PuzzleDifficulty>(
     context: context,
     showDragHandle: true,
+    isScrollControlled: true,
     backgroundColor: AppColors.bleuNuit,
     builder: (context) => Theme(
       data: AppTheme.dark(),
@@ -34,31 +35,36 @@ class _DifficultyChooserSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Text(
-                AppLocalizations.of(context).difficultyChoose,
-                style: theme.textTheme.titleLarge,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            for (final difficulty in PuzzleDifficulty.values)
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.78,
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: DifficultyLevelTile(
-                  difficulty: difficulty,
-                  wins: wins[difficulty] ?? 0,
-                  unlocked: LevelProgression.isUnlocked(difficulty, wins),
-                  onTap: () => Navigator.of(context).pop(difficulty),
+                child: Text(
+                  AppLocalizations.of(context).difficultyChoose,
+                  style: theme.textTheme.titleLarge,
+                  textAlign: TextAlign.center,
                 ),
               ),
-          ],
+              for (final difficulty in PuzzleDifficulty.values)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: DifficultyLevelTile(
+                    difficulty: difficulty,
+                    wins: wins[difficulty] ?? 0,
+                    unlocked: LevelProgression.isUnlocked(difficulty, wins),
+                    onTap: () => Navigator.of(context).pop(difficulty),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -89,7 +95,8 @@ class DifficultyLevelTile extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final accent = AppColors.difficulty(difficulty);
     final progress =
-        (min(wins, LevelProgression.winsPerLevel) / LevelProgression.winsPerLevel)
+        (min(wins, LevelProgression.matchesPerLevel) /
+                LevelProgression.matchesPerLevel)
             .clamp(0.0, 1.0);
 
     final borderColor = unlocked && selected
@@ -140,7 +147,7 @@ class DifficultyLevelTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    l.winsProgress(wins, LevelProgression.winsPerLevel),
+                    l.winsProgress(wins, LevelProgression.matchesPerLevel),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
@@ -172,6 +179,6 @@ class DifficultyLevelTile extends StatelessWidget {
   String _lockHint(AppLocalizations l) {
     final required = LevelProgression.prerequisite(difficulty);
     if (required == null) return l.locked;
-    return l.lockHint(LevelProgression.winsPerLevel, required.label(l));
+    return l.lockHint(LevelProgression.winsToUnlock, required.label(l));
   }
 }

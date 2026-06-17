@@ -4,7 +4,9 @@
 enum PuzzleDifficulty {
   easy(gridSize: 3),
   medium(gridSize: 4),
-  hard(gridSize: 5);
+  hard(gridSize: 5),
+  expert(gridSize: 6),
+  master(gridSize: 7);
 
   const PuzzleDifficulty({required this.gridSize});
 

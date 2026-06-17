@@ -30,9 +30,13 @@
   "difficultyEasy": "Easy",
   "difficultyMedium": "Medium",
   "difficultyHard": "Hard",
+  "difficultyExpert": "Expert",
+  "difficultyMaster": "Master",
   "audienceEasy": "Kids, seniors, beginners",
   "audienceMedium": "Casual players",
   "audienceHard": "More patient players",
+  "audienceExpert": "Seasoned players",
+  "audienceMaster": "Puzzle masters",
 
   "winsProgress": "{count} / {total} wins",
   "@winsProgress": { "placeholders": { "count": { "type": "int" }, "total": { "type": "int" } } },

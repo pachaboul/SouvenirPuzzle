@@ -242,6 +242,18 @@ abstract class AppLocalizations {
   /// **'Hard'**
   String get difficultyHard;
 
+  /// No description provided for @difficultyExpert.
+  ///
+  /// In en, this message translates to:
+  /// **'Expert'**
+  String get difficultyExpert;
+
+  /// No description provided for @difficultyMaster.
+  ///
+  /// In en, this message translates to:
+  /// **'Master'**
+  String get difficultyMaster;
+
   /// No description provided for @audienceEasy.
   ///
   /// In en, this message translates to:
@@ -259,6 +271,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'More patient players'**
   String get audienceHard;
+
+  /// No description provided for @audienceExpert.
+  ///
+  /// In en, this message translates to:
+  /// **'Seasoned players'**
+  String get audienceExpert;
+
+  /// No description provided for @audienceMaster.
+  ///
+  /// In en, this message translates to:
+  /// **'Puzzle masters'**
+  String get audienceMaster;
 
   /// No description provided for @winsProgress.
   ///

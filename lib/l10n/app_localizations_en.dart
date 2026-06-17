@@ -86,6 +86,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get difficultyHard => 'Hard';
 
   @override
+  String get difficultyExpert => 'Expert';
+
+  @override
+  String get difficultyMaster => 'Master';
+
+  @override
   String get audienceEasy => 'Kids, seniors, beginners';
 
   @override
@@ -93,6 +99,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get audienceHard => 'More patient players';
+
+  @override
+  String get audienceExpert => 'Seasoned players';
+
+  @override
+  String get audienceMaster => 'Puzzle masters';
 
   @override
   String winsProgress(int count, int total) {

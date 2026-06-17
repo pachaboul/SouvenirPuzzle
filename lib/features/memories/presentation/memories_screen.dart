@@ -283,8 +283,8 @@ class _LevelChip extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final accent = AppColors.difficulty(difficulty);
     final progress =
-        (min(wins, LevelProgression.winsPerLevel) /
-                LevelProgression.winsPerLevel)
+        (min(wins, LevelProgression.matchesPerLevel) /
+                LevelProgression.matchesPerLevel)
             .clamp(0.0, 1.0);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -311,7 +311,7 @@ class _LevelChip extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              '$wins/${LevelProgression.winsPerLevel}',
+              '$wins/${LevelProgression.matchesPerLevel}',
               style: const TextStyle(color: Colors.white70, fontSize: 11),
             ),
           ] else

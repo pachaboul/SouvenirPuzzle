@@ -11,6 +11,10 @@ extension DifficultyL10n on PuzzleDifficulty {
         return l.difficultyMedium;
       case PuzzleDifficulty.hard:
         return l.difficultyHard;
+      case PuzzleDifficulty.expert:
+        return l.difficultyExpert;
+      case PuzzleDifficulty.master:
+        return l.difficultyMaster;
     }
   }
 
@@ -22,6 +26,10 @@ extension DifficultyL10n on PuzzleDifficulty {
         return l.audienceMedium;
       case PuzzleDifficulty.hard:
         return l.audienceHard;
+      case PuzzleDifficulty.expert:
+        return l.audienceExpert;
+      case PuzzleDifficulty.master:
+        return l.audienceMaster;
     }
   }
 }

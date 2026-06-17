@@ -19,7 +19,10 @@ class AppColors {
   static const Color violet = Color(0xFF8D6CCC); // Difficile
   static const Color rouge = Color(0xFFE7634F); // danger
 
-  /// Accent colour per difficulty: Facile = vert, Moyen = or, Difficile = violet.
+  static const Color teal = Color(0xFF2BB7A3); // Expert
+  static const Color rose = Color(0xFFE0556E); // Master
+
+  /// Accent colour per difficulty.
   static Color difficulty(PuzzleDifficulty difficulty) {
     switch (difficulty) {
       case PuzzleDifficulty.easy:
@@ -28,6 +31,10 @@ class AppColors {
         return or;
       case PuzzleDifficulty.hard:
         return violet;
+      case PuzzleDifficulty.expert:
+        return teal;
+      case PuzzleDifficulty.master:
+        return rose;
     }
   }
 }

@@ -8,38 +8,37 @@ void main() {
       expect(LevelProgression.isUnlocked(PuzzleDifficulty.easy, {}), isTrue);
     });
 
-    test('medium unlocks after 12 easy wins', () {
+    test('next level unlocks after 33 wins in the previous one', () {
       expect(
         LevelProgression.isUnlocked(PuzzleDifficulty.medium, {
-          PuzzleDifficulty.easy: 11,
+          PuzzleDifficulty.easy: 32,
         }),
         isFalse,
       );
       expect(
         LevelProgression.isUnlocked(PuzzleDifficulty.medium, {
-          PuzzleDifficulty.easy: 12,
+          PuzzleDifficulty.easy: 33,
         }),
         isTrue,
       );
     });
 
-    test('hard unlocks after 12 medium wins', () {
+    test('expert and master require 33 wins in their prerequisite', () {
       expect(
-        LevelProgression.isUnlocked(PuzzleDifficulty.hard, {
-          PuzzleDifficulty.easy: 50,
-          PuzzleDifficulty.medium: 11,
+        LevelProgression.isUnlocked(PuzzleDifficulty.expert, {
+          PuzzleDifficulty.hard: 33,
+        }),
+        isTrue,
+      );
+      expect(
+        LevelProgression.isUnlocked(PuzzleDifficulty.master, {
+          PuzzleDifficulty.expert: 32,
         }),
         isFalse,
       );
-      expect(
-        LevelProgression.isUnlocked(PuzzleDifficulty.hard, {
-          PuzzleDifficulty.medium: 12,
-        }),
-        isTrue,
-      );
     });
 
-    test('prerequisite chain', () {
+    test('prerequisite chain covers all levels', () {
       expect(LevelProgression.prerequisite(PuzzleDifficulty.easy), isNull);
       expect(
         LevelProgression.prerequisite(PuzzleDifficulty.medium),
@@ -49,6 +48,19 @@ void main() {
         LevelProgression.prerequisite(PuzzleDifficulty.hard),
         PuzzleDifficulty.medium,
       );
+      expect(
+        LevelProgression.prerequisite(PuzzleDifficulty.expert),
+        PuzzleDifficulty.hard,
+      );
+      expect(
+        LevelProgression.prerequisite(PuzzleDifficulty.master),
+        PuzzleDifficulty.expert,
+      );
+    });
+
+    test('constants', () {
+      expect(LevelProgression.winsToUnlock, 33);
+      expect(LevelProgression.matchesPerLevel, 99);
     });
   });
 }

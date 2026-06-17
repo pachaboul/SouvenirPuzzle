@@ -28,9 +28,13 @@
   "difficultyEasy": "Facile",
   "difficultyMedium": "Moyen",
   "difficultyHard": "Difficile",
+  "difficultyExpert": "Expert",
+  "difficultyMaster": "Maître",
   "audienceEasy": "Enfants, seniors, débutants",
   "audienceMedium": "Joueurs casual",
   "audienceHard": "Joueurs plus patients",
+  "audienceExpert": "Joueurs aguerris",
+  "audienceMaster": "Maîtres du puzzle",
 
   "winsProgress": "{count} / {total} victoires",
   "lockHint": "Gagnez {total} parties en {level} pour débloquer",
