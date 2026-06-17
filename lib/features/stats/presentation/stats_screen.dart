@@ -6,6 +6,7 @@ import '../../../app/theme.dart';
 import '../../../core/widgets/aurora_background.dart';
 import '../../../core/widgets/aurora_page.dart';
 import '../../../core/widgets/aurora_tokens.dart';
+import '../../../core/widgets/compact_layout.dart';
 import '../../../core/widgets/profile_avatar_button.dart';
 import '../../../data/models/puzzle_stats.dart';
 import '../../../data/repositories/puzzle_providers.dart';
@@ -47,10 +48,13 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final statsAsync = ref.watch(statsProvider);
+    final compact = CompactLayout.of(context);
 
     return AuroraPage(
       title: l.statsTitle,
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+      padding: compact
+          ? const EdgeInsets.fromLTRB(12, 4, 12, 12)
+          : const EdgeInsets.fromLTRB(16, 8, 16, 24),
       leading: widget.onMenu == null
           ? null
           : IconButton(
@@ -147,7 +151,7 @@ class _StatsBody extends StatelessWidget {
 
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.only(bottom: 96),
+      padding: EdgeInsets.only(bottom: CompactLayout.bottomNavClearance(context)),
       children: [
         _HeroDashboard(stats: stats, l: l, periodDays: periodDays),
         const SizedBox(height: 16),

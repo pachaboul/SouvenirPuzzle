@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'aurora_background.dart';
 import 'aurora_tokens.dart';
+import 'compact_layout.dart';
 
 /// Shared premium page chrome used across the app:
 /// - aurora backdrop (light or dark)
@@ -32,6 +33,10 @@ class AuroraPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = AuroraTokens.of(context);
+    final effectivePadding =
+        padding == const EdgeInsets.fromLTRB(24, 8, 24, 24)
+            ? CompactLayout.pagePadding(context)
+            : padding;
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: extendBodyBehindAppBar,
@@ -47,7 +52,7 @@ class AuroraPage extends StatelessWidget {
       body: AuroraBackground(
         child: SafeArea(
           child: Padding(
-            padding: padding,
+            padding: effectivePadding,
             child: child,
           ),
         ),

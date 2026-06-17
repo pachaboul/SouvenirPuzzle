@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme.dart';
 import '../../../core/widgets/aurora_background.dart';
 import '../../../core/widgets/aurora_tokens.dart';
+import '../../../core/widgets/compact_layout.dart';
 import '../../../core/widgets/profile_avatar_button.dart';
 import '../../../data/models/puzzle_session_model.dart';
 import '../../../l10n/app_localizations.dart';
@@ -49,6 +50,7 @@ class HomeScreen extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final homeAsync = ref.watch(homeStateProvider);
     final tokens = AuroraTokens.of(context);
+    final compact = CompactLayout.of(context);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -70,7 +72,7 @@ class HomeScreen extends ConsumerWidget {
       body: AuroraBackground(
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+            padding: CompactLayout.pagePadding(context),
             child: Column(
               children: [
                 Expanded(
@@ -79,37 +81,39 @@ class HomeScreen extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 2),
                         Image.asset(
                           'assets/images/logo-souvenirpuzzle.png',
-                          height: 96,
-                          errorBuilder: (_, __, ___) => const Icon(
+                          height: CompactLayout.homeLogoHeight(context),
+                          errorBuilder: (_, __, ___) => Icon(
                             Icons.extension_outlined,
-                            size: 80,
+                            size: compact ? 56 : 80,
                             color: AppColors.or,
                           ),
                         ),
-                        const SizedBox(height: 14),
+                        SizedBox(height: compact ? 8 : 14),
                         Text(
                           l.appName,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: tokens.onGlass,
-                            fontSize: 26,
+                            fontSize: compact ? 22 : 26,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 0.5,
                           ),
                         ),
-                        const SizedBox(height: 6),
+                        SizedBox(height: compact ? 4 : 6),
                         Text(
                           l.homeTagline,
                           textAlign: TextAlign.center,
+                          maxLines: compact ? 2 : 3,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: tokens.onGlassMuted,
-                            fontSize: 13,
+                            fontSize: compact ? 12 : 13,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: compact ? 10 : 16),
                         homeAsync.maybeWhen(
                           data: (state) => state.canResume
                               ? _ResumeButton(
@@ -120,9 +124,7 @@ class HomeScreen extends ConsumerWidget {
                               : const SizedBox.shrink(),
                           orElse: () => const SizedBox.shrink(),
                         ),
-                        SizedBox(
-                          height: MediaQuery.sizeOf(context).height * 0.06,
-                        ),
+                        SizedBox(height: compact ? 8 : 16),
                         IntrinsicHeight(
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -140,7 +142,7 @@ class HomeScreen extends ConsumerWidget {
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 16),
+                              const SizedBox(width: 12),
                               Expanded(
                                 child: _GlassAction(
                                   label: l.homePlay,
@@ -159,7 +161,7 @@ class HomeScreen extends ConsumerWidget {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 14),
+                        SizedBox(height: compact ? 10 : 14),
                         homeAsync.when(
                           loading: () => const Padding(
                             padding: EdgeInsets.symmetric(vertical: 24),
@@ -172,7 +174,9 @@ class HomeScreen extends ConsumerWidget {
                           error: (_, __) => const SizedBox.shrink(),
                           data: (state) => _CurrentLevelCard(state: state),
                         ),
-                        const SizedBox(height: 88),
+                        SizedBox(
+                          height: CompactLayout.bottomNavClearance(context),
+                        ),
                       ],
                     ),
                   ),
@@ -195,6 +199,7 @@ class _CurrentLevelCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final tokens = AuroraTokens.of(context);
+    final compact = CompactLayout.of(context);
     final level = state.activeLevel;
     final accent = AppColors.difficulty(level);
     final wins = state.levelWins;
@@ -202,7 +207,7 @@ class _CurrentLevelCard extends StatelessWidget {
     final grid = level.gridSize;
 
     return GlassCard(
-      padding: const EdgeInsets.all(18),
+      padding: EdgeInsets.all(compact ? 14 : 18),
       borderRadius: 20,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,7 +238,7 @@ class _CurrentLevelCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -242,7 +247,7 @@ class _CurrentLevelCard extends StatelessWidget {
                   level.label(l),
                   style: TextStyle(
                     color: accent,
-                    fontSize: 26,
+                    fontSize: compact ? 22 : 26,
                     fontWeight: FontWeight.w800,
                     height: 1.1,
                   ),
@@ -259,7 +264,7 @@ class _CurrentLevelCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: compact ? 10 : 16),
           Row(
             children: [
               Expanded(
@@ -381,6 +386,8 @@ class _ResumeButton extends StatelessWidget {
     final thumbPath = session.thumbnailPath;
     final hasThumb = thumbPath != null && File(thumbPath).existsSync();
     final difficulty = PuzzleDifficulty.values.byName(session.difficulty);
+    final compact = CompactLayout.of(context);
+    final thumbH = CompactLayout.resumeThumbHeight(context);
 
     return Material(
       color: Colors.transparent,
@@ -412,7 +419,7 @@ class _ResumeButton extends StatelessWidget {
                   top: Radius.circular(20),
                 ),
                 child: SizedBox(
-                  height: 132,
+                  height: thumbH,
                   width: double.infinity,
                   child: hasThumb
                       ? Image.file(File(thumbPath), fit: BoxFit.cover)
@@ -427,7 +434,12 @@ class _ResumeButton extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(18, 14, 14, 16),
+                padding: EdgeInsets.fromLTRB(
+                  compact ? 14 : 18,
+                  compact ? 10 : 14,
+                  compact ? 12 : 14,
+                  compact ? 12 : 16,
+                ),
                 child: Row(
                   children: [
                     Expanded(
@@ -436,9 +448,9 @@ class _ResumeButton extends StatelessWidget {
                         children: [
                           Text(
                             label,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppColors.encre,
-                              fontSize: 17,
+                              fontSize: compact ? 15 : 17,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
@@ -447,17 +459,17 @@ class _ResumeButton extends StatelessWidget {
                             difficulty.label(l),
                             style: TextStyle(
                               color: AppColors.encre.withValues(alpha: 0.7),
-                              fontSize: 13,
+                              fontSize: compact ? 12 : 13,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const Icon(
+                    Icon(
                       Icons.play_arrow_rounded,
                       color: AppColors.encre,
-                      size: 36,
+                      size: compact ? 30 : 36,
                     ),
                   ],
                 ),
@@ -486,15 +498,16 @@ class _GlassAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = AuroraTokens.of(context);
+    final compact = CompactLayout.of(context);
     return GlassCard(
       onTap: onTap,
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(compact ? 14 : 18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(compact ? 10 : 12),
             decoration: BoxDecoration(
               color: accent.withValues(alpha: 0.9),
               shape: BoxShape.circle,
@@ -506,14 +519,14 @@ class _GlassAction extends StatelessWidget {
                 ),
               ],
             ),
-            child: Icon(icon, color: Colors.white, size: 26),
+            child: Icon(icon, color: Colors.white, size: compact ? 22 : 26),
           ),
-          const SizedBox(height: 28),
+          SizedBox(height: compact ? 12 : 20),
           Text(
             label,
             style: TextStyle(
               color: tokens.onGlass,
-              fontSize: 18,
+              fontSize: compact ? 15 : 17,
               fontWeight: FontWeight.w700,
             ),
           ),

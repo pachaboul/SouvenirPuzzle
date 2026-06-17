@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../app/theme.dart';
+import '../../../core/widgets/compact_layout.dart';
 import '../../../core/widgets/profile_avatar_button.dart';
 import '../../../data/models/user_profile.dart';
 import '../../../data/repositories/profile_providers.dart';
@@ -101,48 +102,54 @@ class _ProfileSwitcherSheet extends ConsumerWidget {
     }
 
     final isLastProfile = state.profiles.length <= 1;
+    final compact = CompactLayout.of(context);
 
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              l.profilesTitle,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 16),
-            for (final profile in state.profiles)
-              _ProfileTile(
-                profile: profile,
-                selected: profile.id == state.activeProfileId,
-                onTap: () async {
-                  await ref
-                      .read(profileControllerProvider.notifier)
-                      .switchProfile(profile.id);
-                  if (context.mounted) Navigator.of(context).pop();
-                },
-                onEdit: () => showEditProfileDialog(context, profile),
-                onDelete: () => _confirmDelete(
-                  context,
-                  ref,
-                  profile,
-                  isLastProfile,
-                ),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(context).height * 0.82,
+        ),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(16, 0, 16, compact ? 12 : 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                l.profilesTitle,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: () {
-                Navigator.of(context).pop();
-                showCreateProfileDialog(context);
-              },
-              icon: const Icon(Icons.person_add_alt_1_outlined),
-              label: Text(l.profilesAdd),
-            ),
-          ],
+              SizedBox(height: compact ? 10 : 14),
+              for (final profile in state.profiles)
+                _ProfileTile(
+                  profile: profile,
+                  selected: profile.id == state.activeProfileId,
+                  compact: compact,
+                  onTap: () async {
+                    await ref
+                        .read(profileControllerProvider.notifier)
+                        .switchProfile(profile.id);
+                    if (context.mounted) Navigator.of(context).pop();
+                  },
+                  onEdit: () => showEditProfileDialog(context, profile),
+                  onDelete: () => _confirmDelete(
+                    context,
+                    ref,
+                    profile,
+                    isLastProfile,
+                  ),
+                ),
+              SizedBox(height: compact ? 6 : 8),
+              OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  showCreateProfileDialog(context);
+                },
+                icon: const Icon(Icons.person_add_alt_1_outlined),
+                label: Text(l.profilesAdd),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -156,6 +163,7 @@ class _ProfileTile extends StatelessWidget {
     required this.onTap,
     required this.onEdit,
     required this.onDelete,
+    this.compact = false,
   });
 
   final UserProfile profile;
@@ -163,13 +171,20 @@ class _ProfileTile extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     return ListTile(
+      dense: compact,
+      visualDensity: compact ? VisualDensity.compact : VisualDensity.standard,
       contentPadding: EdgeInsets.zero,
-      leading: ProfileAvatarChip(profile: profile, selected: selected),
+      leading: ProfileAvatarChip(
+        profile: profile,
+        selected: selected,
+        size: compact ? 40 : 44,
+      ),
       title: Text(
         profile.name,
         style: TextStyle(
@@ -186,12 +201,14 @@ class _ProfileTile extends StatelessWidget {
               child: Icon(Icons.check_circle, color: AppColors.or, size: 22),
             ),
           IconButton(
-            icon: const Icon(Icons.edit_outlined, size: 20),
+            visualDensity: VisualDensity.compact,
+            icon: Icon(Icons.edit_outlined, size: compact ? 18 : 20),
             tooltip: l.profilesEdit,
             onPressed: onEdit,
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline, size: 20),
+            visualDensity: VisualDensity.compact,
+            icon: Icon(Icons.delete_outline, size: compact ? 18 : 20),
             tooltip: l.profilesDelete,
             onPressed: onDelete,
           ),
@@ -264,64 +281,69 @@ class _ProfileEditorDialogState extends ConsumerState<_ProfileEditorDialog> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final compact = CompactLayout.of(context);
     final displayName = _nameController.text.isEmpty
         ? '?'
         : _nameController.text;
+    final avatarSize = compact ? 56.0 : 72.0;
 
     return AlertDialog(
       title: Text(
         widget.isEditing ? l.profilesEditTitle : l.profilesCreate,
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          GestureDetector(
-            onTap: _busy ? null : _pickAvatar,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                ProfileAvatarChip(
-                  profile: UserProfile(
-                    id: widget.profile?.id ?? 'temp',
-                    name: displayName,
-                    createdAt: widget.profile?.createdAt ?? DateTime.now(),
-                    avatarPath: _avatar?.path ?? _existingAvatarPath,
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: _busy ? null : _pickAvatar,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  ProfileAvatarChip(
+                    profile: UserProfile(
+                      id: widget.profile?.id ?? 'temp',
+                      name: displayName,
+                      createdAt: widget.profile?.createdAt ?? DateTime.now(),
+                      avatarPath: _avatar?.path ?? _existingAvatarPath,
+                    ),
+                    size: avatarSize,
                   ),
-                  size: 72,
-                ),
-                const Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: CircleAvatar(
-                    radius: 14,
-                    backgroundColor: AppColors.or,
-                    child: Icon(
-                      Icons.camera_alt,
-                      size: 14,
-                      color: AppColors.encre,
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: CircleAvatar(
+                      radius: compact ? 11 : 14,
+                      backgroundColor: AppColors.or,
+                      child: Icon(
+                        Icons.camera_alt,
+                        size: compact ? 12 : 14,
+                        color: AppColors.encre,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            l.profilesChooseAvatar,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _nameController,
-            decoration: InputDecoration(
-              labelText: l.profilesNameHint,
-              border: const OutlineInputBorder(),
+            SizedBox(height: compact ? 6 : 8),
+            Text(
+              l.profilesChooseAvatar,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
-            textCapitalization: TextCapitalization.words,
-            enabled: !_busy,
-            onChanged: (_) => setState(() {}),
-          ),
-        ],
+            SizedBox(height: compact ? 10 : 14),
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                labelText: l.profilesNameHint,
+                border: const OutlineInputBorder(),
+                isDense: compact,
+              ),
+              textCapitalization: TextCapitalization.words,
+              enabled: !_busy,
+              onChanged: (_) => setState(() {}),
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(

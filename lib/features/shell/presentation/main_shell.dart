@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/app_constants.dart';
 import '../../../app/theme.dart';
 import '../../../core/widgets/aurora_tokens.dart';
+import '../../../core/widgets/compact_layout.dart';
 import '../../../core/widgets/profile_avatar_button.dart';
 import '../../../data/models/user_profile.dart';
 import '../../../data/repositories/profile_providers.dart';
@@ -173,11 +174,12 @@ class _FuturisticNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = AuroraTokens.of(context);
+    final compact = CompactLayout.of(context);
     return SafeArea(
       top: false,
       child: Container(
-        margin: const EdgeInsets.fromLTRB(12, 0, 12, 16),
-        height: 64,
+        margin: EdgeInsets.fromLTRB(12, 0, 12, compact ? 10 : 16),
+        height: compact ? 58 : 64,
         padding: const EdgeInsets.symmetric(horizontal: 4),
         decoration: BoxDecoration(
           gradient: LinearGradient(colors: tokens.shellNavGradient),
@@ -288,6 +290,7 @@ class _AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final tokens = AuroraTokens.of(context);
+    final compact = CompactLayout.of(context);
     return Drawer(
       backgroundColor: tokens.drawerGradient.last,
       shape: const RoundedRectangleBorder(
@@ -306,122 +309,150 @@ class _AppDrawer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                padding: EdgeInsets.fromLTRB(
+                  compact ? 16 : 24,
+                  compact ? 12 : 20,
+                  compact ? 16 : 24,
+                  compact ? 8 : 12,
+                ),
+                child: Row(
                   children: [
                     Image.asset(
                       'assets/images/logo-souvenirpuzzle.png',
-                      height: 64,
-                      errorBuilder: (_, __, ___) => const Icon(
+                      height: compact ? 44 : 56,
+                      errorBuilder: (_, __, ___) => Icon(
                         Icons.extension_outlined,
-                        size: 56,
+                        size: compact ? 40 : 48,
                         color: AppColors.or,
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      l.appName,
-                      style: const TextStyle(
-                        color: AppColors.or,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      l.splashTagline,
-                      style: TextStyle(
-                        color: tokens.drawerMuted,
-                        fontSize: 12,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l.appName,
+                            style: TextStyle(
+                              color: AppColors.or,
+                              fontSize: compact ? 17 : 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            l.splashTagline,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: tokens.drawerMuted,
+                              fontSize: compact ? 11 : 12,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-              if (profileState != null) ...[
-                _DrawerSectionTitle(l.profilesSwitch),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                  child: SizedBox(
-                    height: 76,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: profileState!.profiles.length + 1,
-                      separatorBuilder: (_, __) => const SizedBox(width: 10),
-                      itemBuilder: (context, index) {
-                        if (index == profileState!.profiles.length) {
-                          return _AddProfileChip(onTap: onCreateProfile);
-                        }
-                        final profile = profileState!.profiles[index];
-                        final selected =
-                            profile.id == profileState!.activeProfileId;
-                        return _DrawerProfileChip(
-                          profile: profile,
-                          selected: selected,
-                          onTap: () => onProfileSelected(profile.id),
-                        );
-                      },
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    if (profileState != null) ...[
+                      _DrawerSectionTitle(l.profilesSwitch, compact: compact),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+                        child: SizedBox(
+                          height: compact ? 64 : 76,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: profileState!.profiles.length + 1,
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(width: 10),
+                            itemBuilder: (context, index) {
+                              if (index == profileState!.profiles.length) {
+                                return _AddProfileChip(
+                                  onTap: onCreateProfile,
+                                  compact: compact,
+                                );
+                              }
+                              final profile = profileState!.profiles[index];
+                              final selected = profile.id ==
+                                  profileState!.activeProfileId;
+                              return _DrawerProfileChip(
+                                profile: profile,
+                                selected: selected,
+                                compact: compact,
+                                onTap: () => onProfileSelected(profile.id),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      const _DrawerDivider(),
+                    ],
+                    _DrawerSectionTitle(l.menuSectionPlay, compact: compact),
+                    _DrawerItem(
+                      icon: Icons.home_outlined,
+                      label: l.navHome,
+                      selected: currentIndex == 0,
+                      compact: compact,
+                      onTap: () => onSelect(0),
                     ),
-                  ),
+                    _DrawerItem(
+                      icon: Icons.photo_library_outlined,
+                      label: l.homeMyMemories,
+                      selected: currentIndex == 1,
+                      compact: compact,
+                      onTap: () => onSelect(1),
+                    ),
+                    _DrawerItem(
+                      icon: Icons.play_circle_outline,
+                      label: l.getStartedTitle,
+                      selected: false,
+                      compact: compact,
+                      onTap: onGetStarted,
+                    ),
+                    const _DrawerDivider(),
+                    _DrawerSectionTitle(l.menuSectionProgress, compact: compact),
+                    _DrawerItem(
+                      icon: Icons.bar_chart_outlined,
+                      label: l.statsTitle,
+                      selected: currentIndex == 2,
+                      compact: compact,
+                      onTap: () => onSelect(2),
+                    ),
+                    _DrawerItem(
+                      icon: Icons.settings_outlined,
+                      label: l.settingsTitle,
+                      selected: currentIndex == 3,
+                      compact: compact,
+                      onTap: () => onSelect(3),
+                    ),
+                    const _DrawerDivider(),
+                    _DrawerSectionTitle(l.menuSectionInfo, compact: compact),
+                    _DrawerItem(
+                      icon: Icons.info_outline,
+                      label: l.aboutTitle,
+                      selected: false,
+                      compact: compact,
+                      onTap: onAbout,
+                    ),
+                    _DrawerItem(
+                      icon: Icons.support_agent_outlined,
+                      label: l.contactTitle,
+                      selected: false,
+                      compact: compact,
+                      onTap: onContact,
+                    ),
+                  ],
                 ),
-                const _DrawerDivider(),
-              ],
-              // —— Jouer (actions les plus fréquentes) ——
-              _DrawerSectionTitle(l.menuSectionPlay),
-              _DrawerItem(
-                icon: Icons.home_outlined,
-                label: l.navHome,
-                selected: currentIndex == 0,
-                onTap: () => onSelect(0),
               ),
-              _DrawerItem(
-                icon: Icons.photo_library_outlined,
-                label: l.homeMyMemories,
-                selected: currentIndex == 1,
-                onTap: () => onSelect(1),
-              ),
-              _DrawerItem(
-                icon: Icons.play_circle_outline,
-                label: l.getStartedTitle,
-                selected: false,
-                onTap: onGetStarted,
-              ),
-              const _DrawerDivider(),
-              // —— Progression & réglages ——
-              _DrawerSectionTitle(l.menuSectionProgress),
-              _DrawerItem(
-                icon: Icons.bar_chart_outlined,
-                label: l.statsTitle,
-                selected: currentIndex == 2,
-                onTap: () => onSelect(2),
-              ),
-              _DrawerItem(
-                icon: Icons.settings_outlined,
-                label: l.settingsTitle,
-                selected: currentIndex == 3,
-                onTap: () => onSelect(3),
-              ),
-              const _DrawerDivider(),
-              // —— Informations & support ——
-              _DrawerSectionTitle(l.menuSectionInfo),
-              _DrawerItem(
-                icon: Icons.info_outline,
-                label: l.aboutTitle,
-                selected: false,
-                onTap: onAbout,
-              ),
-              _DrawerItem(
-                icon: Icons.support_agent_outlined,
-                label: l.contactTitle,
-                selected: false,
-                onTap: onContact,
-              ),
-              const Spacer(),
               Padding(
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.fromLTRB(20, 4, 20, compact ? 8 : 12),
                 child: Text(
                   '${l.appName} · v${AppConstants.version}',
-                  style: TextStyle(color: tokens.drawerFooter, fontSize: 12),
+                  style: TextStyle(color: tokens.drawerFooter, fontSize: 11),
                 ),
               ),
             ],
@@ -437,23 +468,30 @@ class _DrawerProfileChip extends StatelessWidget {
     required this.profile,
     required this.selected,
     required this.onTap,
+    this.compact = false,
   });
 
   final UserProfile profile;
   final bool selected;
   final VoidCallback onTap;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
     final tokens = AuroraTokens.of(context);
+    final avatarSize = compact ? 36.0 : 44.0;
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
-        width: 64,
+        width: compact ? 56 : 64,
         child: Column(
           children: [
-            ProfileAvatarChip(profile: profile, selected: selected, size: 44),
-            const SizedBox(height: 4),
+            ProfileAvatarChip(
+              profile: profile,
+              selected: selected,
+              size: avatarSize,
+            ),
+            const SizedBox(height: 2),
             Text(
               profile.name,
               maxLines: 1,
@@ -461,7 +499,7 @@ class _DrawerProfileChip extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: selected ? AppColors.or : tokens.drawerItemText,
-                fontSize: 10,
+                fontSize: 9,
                 fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
               ),
             ),
@@ -473,34 +511,36 @@ class _DrawerProfileChip extends StatelessWidget {
 }
 
 class _AddProfileChip extends StatelessWidget {
-  const _AddProfileChip({required this.onTap});
+  const _AddProfileChip({required this.onTap, this.compact = false});
 
   final VoidCallback onTap;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
+    final chipSize = compact ? 36.0 : 48.0;
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
-        width: 64,
+        width: compact ? 56 : 64,
         child: Column(
           children: [
             Container(
-              width: 48,
-              height: 48,
+              width: chipSize,
+              height: chipSize,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.or.withValues(alpha: 0.5)),
                 color: AuroraTokens.of(context).surfaceSubtle,
               ),
-              child: const Icon(Icons.add, color: AppColors.or, size: 22),
+              child: Icon(Icons.add, color: AppColors.or, size: compact ? 18 : 22),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             Text(
               '+',
               style: TextStyle(
                 color: AuroraTokens.of(context).drawerItemText,
-                fontSize: 10,
+                fontSize: 9,
               ),
             ),
           ],
@@ -511,22 +551,23 @@ class _AddProfileChip extends StatelessWidget {
 }
 
 class _DrawerSectionTitle extends StatelessWidget {
-  const _DrawerSectionTitle(this.title);
+  const _DrawerSectionTitle(this.title, {this.compact = false});
 
   final String title;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
     final tokens = AuroraTokens.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 12, 24, 4),
+      padding: EdgeInsets.fromLTRB(24, compact ? 6 : 10, 24, 2),
       child: Text(
         title.toUpperCase(),
         style: TextStyle(
           color: tokens.drawerSection,
-          fontSize: 11,
+          fontSize: 10,
           fontWeight: FontWeight.w700,
-          letterSpacing: 1.2,
+          letterSpacing: 1.1,
         ),
       ),
     );
@@ -539,7 +580,7 @@ class _DrawerDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
       child: Divider(height: 1, color: AuroraTokens.of(context).divider),
     );
   }
@@ -551,47 +592,58 @@ class _DrawerItem extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onTap,
+    this.compact = false,
   });
 
   final IconData icon;
   final String label;
   final bool selected;
   final VoidCallback onTap;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
     final tokens = AuroraTokens.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: compact ? 2 : 3),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(14),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: compact ? 10 : 12,
+            ),
             decoration: BoxDecoration(
               gradient: selected
                   ? const LinearGradient(
                       colors: [AppColors.orClair, AppColors.or],
                     )
                   : null,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(14),
             ),
             child: Row(
               children: [
                 Icon(
                   icon,
+                  size: compact ? 20 : 22,
                   color: selected ? AppColors.encre : tokens.drawerItemIcon,
                 ),
-                const SizedBox(width: 16),
-                Text(
-                  label,
-                  style: TextStyle(
-                    color: selected ? AppColors.encre : tokens.drawerItemText,
-                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                    fontSize: 15,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color:
+                          selected ? AppColors.encre : tokens.drawerItemText,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                      fontSize: compact ? 14 : 15,
+                    ),
                   ),
                 ),
               ],

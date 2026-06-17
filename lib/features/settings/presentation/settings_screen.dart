@@ -4,8 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme.dart';
 import '../../../core/widgets/aurora_background.dart';
 import '../../../core/widgets/aurora_page.dart';
-import '../../../core/widgets/profile_avatar_button.dart';
 import '../../../core/widgets/aurora_tokens.dart';
+import '../../../core/widgets/compact_layout.dart';
+import '../../../core/widgets/profile_avatar_button.dart';
 import '../../../data/models/app_settings.dart';
 import '../../../data/repositories/puzzle_providers.dart';
 import '../../../data/repositories/settings_providers.dart';
@@ -56,7 +57,9 @@ class SettingsScreen extends ConsumerWidget {
 
     return AuroraPage(
       title: l.settingsTitle,
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+      padding: CompactLayout.of(context)
+          ? const EdgeInsets.fromLTRB(12, 4, 12, 12)
+          : const EdgeInsets.fromLTRB(16, 8, 16, 24),
       leading: onMenu == null
           ? null
           : IconButton(
@@ -77,7 +80,9 @@ class SettingsScreen extends ConsumerWidget {
           ),
         ),
         data: (settings) => ListView(
-          padding: const EdgeInsets.only(bottom: 96),
+          padding: EdgeInsets.only(
+            bottom: CompactLayout.bottomNavClearance(context),
+          ),
           children: [
             _GlassSection(
               title: l.settingsSectionGame,
@@ -203,7 +208,7 @@ class _GlassSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
+      padding: EdgeInsets.only(bottom: CompactLayout.of(context) ? 10 : 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

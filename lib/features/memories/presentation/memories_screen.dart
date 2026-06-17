@@ -9,6 +9,7 @@ import '../../../app/theme.dart';
 import '../../../core/widgets/aurora_background.dart';
 import '../../../core/widgets/aurora_page.dart';
 import '../../../core/widgets/aurora_tokens.dart';
+import '../../../core/widgets/compact_layout.dart';
 import '../../../core/widgets/profile_avatar_button.dart';
 import '../../../data/models/best_score.dart';
 import '../../../data/models/puzzle_session_model.dart';
@@ -164,11 +165,14 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final compact = CompactLayout.of(context);
     return AuroraPage(
       title: _sessions.isEmpty
           ? l.memoriesTitle
           : l.memoriesCountTitle(_sessions.length),
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      padding: compact
+          ? const EdgeInsets.fromLTRB(12, 4, 12, 0)
+          : const EdgeInsets.fromLTRB(16, 8, 16, 0),
       leading: widget.onMenu == null
           ? null
           : IconButton(
