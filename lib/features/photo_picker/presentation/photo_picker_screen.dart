@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../core/widgets/aurora_background.dart';
+import '../../../core/widgets/aurora_page.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../difficulty/presentation/difficulty_screen.dart';
 
@@ -49,56 +51,51 @@ class _PhotoPickerScreenState extends State<PhotoPickerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final l = AppLocalizations.of(context);
     final image = _image;
-    return Scaffold(
-      appBar: AppBar(title: Text(l.photoTitle)),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: image == null
-                    ? _PhotoPlaceholder(onTap: _picking ? null : _pick)
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: SizedBox.expand(
-                          child: Image.file(image, fit: BoxFit.contain),
-                        ),
+    return AuroraPage(
+      title: l.photoTitle,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: GlassCard(
+              padding: const EdgeInsets.all(18),
+              child: image == null
+                  ? _PhotoPlaceholder(onTap: _picking ? null : _pick)
+                  : ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: SizedBox.expand(
+                        child: Image.file(image, fit: BoxFit.contain),
                       ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Icon(Icons.lock_outline,
-                      size: 16, color: theme.colorScheme.onSurfaceVariant),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      l.photoPrivacyNote,
-                      style: theme.textTheme.bodySmall
-                          ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              OutlinedButton.icon(
-                onPressed: _picking ? null : _pick,
-                icon: const Icon(Icons.photo_library_outlined),
-                label: Text(image == null ? l.photoChoose : l.photoChange),
-              ),
-              const SizedBox(height: 12),
-              FilledButton(
-                onPressed: image == null ? null : _continue,
-                child: Text(l.commonContinue),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              const Icon(Icons.lock_outline, size: 16, color: Colors.white70),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  l.photoPrivacyNote,
+                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                ),
               ),
             ],
           ),
-        ),
+          const SizedBox(height: 16),
+          OutlinedButton.icon(
+            onPressed: _picking ? null : _pick,
+            icon: const Icon(Icons.photo_library_outlined),
+            label: Text(image == null ? l.photoChoose : l.photoChange),
+          ),
+          const SizedBox(height: 12),
+          FilledButton(
+            onPressed: image == null ? null : _continue,
+            child: Text(l.commonContinue),
+          ),
+        ],
       ),
     );
   }
@@ -111,26 +108,29 @@ class _PhotoPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: theme.colorScheme.outlineVariant, width: 2),
+          border: Border.all(color: Colors.white24, width: 2),
         ),
         padding: const EdgeInsets.all(40),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.add_photo_alternate_outlined,
-                size: 72, color: theme.colorScheme.primary),
+            const Icon(Icons.add_photo_alternate_outlined,
+                size: 72, color: Colors.white),
             const SizedBox(height: 16),
             Text(
               AppLocalizations.of(context).photoTapToChoose,
               textAlign: TextAlign.center,
-              style: theme.textTheme.titleMedium,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ],
         ),

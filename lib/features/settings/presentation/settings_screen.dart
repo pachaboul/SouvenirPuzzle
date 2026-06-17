@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/theme.dart';
+import '../../../core/widgets/aurora_background.dart';
+import '../../../core/widgets/aurora_page.dart';
 import '../../../data/models/app_settings.dart';
 import '../../../data/repositories/puzzle_providers.dart';
 import '../../../data/repositories/settings_providers.dart';
@@ -35,158 +38,187 @@ class SettingsScreen extends ConsumerWidget {
     if (confirmed != true) return;
     await ref.read(puzzleRepositoryProvider).clearAllSessions();
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l.settingsCleared)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l.settingsCleared)));
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final l = AppLocalizations.of(context);
     final settingsAsync = ref.watch(settingsControllerProvider);
     final controller = ref.read(settingsControllerProvider.notifier);
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: onMenu == null
-            ? null
-            : IconButton(
-                icon: const Icon(Icons.menu),
-                tooltip: l.menu,
-                onPressed: onMenu,
+    return AuroraPage(
+      title: l.settingsTitle,
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+      leading: onMenu == null
+          ? null
+          : IconButton(
+              icon: const Icon(Icons.menu),
+              tooltip: l.menu,
+              onPressed: onMenu,
+            ),
+      child: settingsAsync.when(
+        loading: () =>
+            const Center(child: CircularProgressIndicator(color: AppColors.or)),
+        error: (e, _) => Center(
+          child: Text(
+            l.errorPrefix('$e'),
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+        data: (settings) => ListView(
+          padding: const EdgeInsets.only(bottom: 96),
+          children: [
+            _GlassSection(
+              title: l.settingsSectionGame,
+              child: Column(
+                children: [
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    secondary: const Icon(
+                      Icons.volume_up_outlined,
+                      color: Colors.white,
+                    ),
+                    title: Text(
+                      l.settingsSound,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    value: settings.soundEnabled,
+                    activeColor: AppColors.or,
+                    onChanged: controller.setSoundEnabled,
+                  ),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    secondary: const Icon(Icons.vibration, color: Colors.white),
+                    title: Text(
+                      l.settingsVibration,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    value: settings.vibrationEnabled,
+                    activeColor: AppColors.or,
+                    onChanged: controller.setVibrationEnabled,
+                  ),
+                ],
               ),
-        title: Text(l.settingsTitle),
-      ),
-      body: SafeArea(
-        child: settingsAsync.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => Center(child: Text(l.errorPrefix('$e'))),
-          data: (settings) => ListView(
-            padding: const EdgeInsets.only(bottom: 96),
-            children: [
-              _SectionTitle(l.settingsSectionGame),
-              SwitchListTile(
-                secondary: const Icon(Icons.volume_up_outlined),
-                title: Text(l.settingsSound),
-                value: settings.soundEnabled,
-                onChanged: controller.setSoundEnabled,
+            ),
+            _GlassSection(
+              title: l.settingsSectionAppearance,
+              child: SegmentedButton<ThemeMode>(
+                showSelectedIcon: false,
+                segments: [
+                  ButtonSegment(
+                    value: ThemeMode.light,
+                    label: Text(l.themeLight),
+                  ),
+                  ButtonSegment(
+                    value: ThemeMode.dark,
+                    label: Text(l.themeDark),
+                  ),
+                  ButtonSegment(
+                    value: ThemeMode.system,
+                    label: Text(l.themeSystem),
+                  ),
+                ],
+                selected: {settings.themeMode},
+                onSelectionChanged: (s) => controller.setThemeMode(s.first),
               ),
-              SwitchListTile(
-                secondary: const Icon(Icons.vibration),
-                title: Text(l.settingsVibration),
-                value: settings.vibrationEnabled,
-                onChanged: controller.setVibrationEnabled,
+            ),
+            _GlassSection(
+              title: l.settingsLanguage,
+              child: SegmentedButton<AppLanguage>(
+                showSelectedIcon: false,
+                segments: [
+                  ButtonSegment(
+                    value: AppLanguage.system,
+                    label: Text(l.languageSystem),
+                  ),
+                  ButtonSegment(
+                    value: AppLanguage.french,
+                    label: Text(l.languageFrench),
+                  ),
+                  ButtonSegment(
+                    value: AppLanguage.english,
+                    label: Text(l.languageEnglish),
+                  ),
+                ],
+                selected: {settings.language},
+                onSelectionChanged: (s) => controller.setLanguage(s.first),
               ),
-              const Divider(height: 32),
-              _SectionTitle(l.settingsSectionAppearance),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: SegmentedButton<ThemeMode>(
-                  segments: [
-                    ButtonSegment(
-                      value: ThemeMode.light,
-                      icon: const Icon(Icons.light_mode_outlined),
-                      label: Text(l.themeLight),
-                    ),
-                    ButtonSegment(
-                      value: ThemeMode.dark,
-                      icon: const Icon(Icons.dark_mode_outlined),
-                      label: Text(l.themeDark),
-                    ),
-                    ButtonSegment(
-                      value: ThemeMode.system,
-                      icon: const Icon(Icons.brightness_auto_outlined),
-                      label: Text(l.themeSystem),
-                    ),
-                  ],
-                  selected: {settings.themeMode},
-                  onSelectionChanged: (selection) =>
-                      controller.setThemeMode(selection.first),
-                ),
-              ),
-              const SizedBox(height: 16),
-              _SectionTitle(l.settingsLanguage),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: SegmentedButton<AppLanguage>(
-                  segments: [
-                    ButtonSegment(
-                      value: AppLanguage.system,
-                      label: Text(l.languageSystem),
-                    ),
-                    ButtonSegment(
-                      value: AppLanguage.french,
-                      label: Text(l.languageFrench),
-                    ),
-                    ButtonSegment(
-                      value: AppLanguage.english,
-                      label: Text(l.languageEnglish),
-                    ),
-                  ],
-                  selected: {settings.language},
-                  onSelectionChanged: (selection) =>
-                      controller.setLanguage(selection.first),
-                ),
-              ),
-              const Divider(height: 32),
-              _SectionTitle(l.settingsSectionPrivacy),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        Icon(Icons.shield_outlined,
-                            color: theme.colorScheme.primary),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Text(
-                            l.settingsPrivacyText,
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                        ),
-                      ],
+            ),
+            _GlassSection(
+              title: l.settingsSectionPrivacy,
+              child: Row(
+                children: [
+                  const Icon(Icons.shield_outlined, color: AppColors.or),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      l.settingsPrivacyText,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 13,
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-              const Divider(height: 32),
-              ListTile(
-                leading: Icon(Icons.delete_outline,
-                    color: theme.colorScheme.error),
+            ),
+            GlassCard(
+              padding: EdgeInsets.zero,
+              tint: AppColors.rouge,
+              child: ListTile(
+                leading: const Icon(Icons.delete_outline, color: Colors.white),
                 title: Text(
                   l.settingsClearHistory,
-                  style: TextStyle(color: theme.colorScheme.error),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 onTap: () => _clearHistory(context, ref),
               ),
-              const SizedBox(height: 24),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _SectionTitle extends StatelessWidget {
-  const _SectionTitle(this.title);
+/// A titled frosted-glass settings section.
+class _GlassSection extends StatelessWidget {
+  const _GlassSection({required this.title, required this.child});
 
   final String title;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-      child: Text(
-        title,
-        style: theme.textTheme.titleSmall?.copyWith(
-          color: theme.colorScheme.primary,
-          fontWeight: FontWeight.bold,
-        ),
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(6, 0, 6, 8),
+            child: Text(
+              title.toUpperCase(),
+              style: const TextStyle(
+                color: AppColors.or,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.1,
+              ),
+            ),
+          ),
+          GlassCard(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            borderRadius: 18,
+            child: child,
+          ),
+        ],
       ),
     );
   }

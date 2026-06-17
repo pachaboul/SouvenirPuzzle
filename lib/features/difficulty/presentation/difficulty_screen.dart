@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/widgets/aurora_background.dart';
+import '../../../core/widgets/aurora_page.dart';
 import '../../../data/repositories/puzzle_providers.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../puzzle/domain/level_progression.dart';
@@ -68,76 +70,73 @@ class _DifficultyScreenState extends ConsumerState<DifficultyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final l = AppLocalizations.of(context);
-    return Scaffold(
-      appBar: AppBar(title: Text(l.difficultyTitle)),
-      body: SafeArea(
-        child: _loading
-            ? const Center(child: CircularProgressIndicator())
-            : Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: AspectRatio(
-                                aspectRatio: 16 / 9,
-                                child: Image.file(
-                                  widget.image,
-                                  fit: BoxFit.cover,
-                                ),
+    return AuroraPage(
+      title: l.difficultyTitle,
+      child: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: GlassCard(
+                    padding: const EdgeInsets.all(18),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: AspectRatio(
+                              aspectRatio: 16 / 9,
+                              child: Image.file(
+                                widget.image,
+                                fit: BoxFit.cover,
                               ),
                             ),
-                            const SizedBox(height: 24),
-                            Text(
-                              l.difficultyChoose,
-                              style: theme.textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            l.difficultyChoose,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
                             ),
-                            const SizedBox(height: 12),
-                            for (final difficulty in PuzzleDifficulty.values)
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: DifficultyLevelTile(
-                                  difficulty: difficulty,
-                                  wins: _wins[difficulty] ?? 0,
-                                  unlocked: LevelProgression.isUnlocked(
-                                    difficulty,
-                                    _wins,
-                                  ),
-                                  selected: _selected == difficulty,
-                                  onTap: _creating
-                                      ? () {}
-                                      : () => setState(
-                                            () => _selected = difficulty,
-                                          ),
-                                ),
+                          ),
+                          const SizedBox(height: 12),
+                          for (final difficulty in PuzzleDifficulty.values)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: DifficultyLevelTile(
+                                difficulty: difficulty,
+                                wins: _wins[difficulty] ?? 0,
+                                unlocked:
+                                    LevelProgression.isUnlocked(difficulty, _wins),
+                                selected: _selected == difficulty,
+                                onTap: _creating
+                                    ? () {}
+                                    : () => setState(() => _selected = difficulty),
                               ),
-                          ],
-                        ),
+                            ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    FilledButton(
-                      onPressed: _creating ? null : _start,
-                      child: _creating
-                          ? const SizedBox(
-                              height: 24,
-                              width: 24,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : Text(l.commonStart),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-      ),
+                const SizedBox(height: 16),
+                FilledButton(
+                  onPressed: _creating ? null : _start,
+                  child: _creating
+                      ? const SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(l.commonStart),
+                ),
+              ],
+            ),
     );
   }
 }

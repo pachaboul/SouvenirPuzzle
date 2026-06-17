@@ -17,7 +17,11 @@ Future<PuzzleDifficulty?> showDifficultyChooser(
   return showModalBottomSheet<PuzzleDifficulty>(
     context: context,
     showDragHandle: true,
-    builder: (context) => _DifficultyChooserSheet(wins: wins),
+    backgroundColor: AppColors.bleuNuit,
+    builder: (context) => Theme(
+      data: AppTheme.dark(),
+      child: _DifficultyChooserSheet(wins: wins),
+    ),
   );
 }
 

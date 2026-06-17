@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme.dart';
+import '../../../core/widgets/aurora_background.dart';
 import '../../../data/models/puzzle_session_model.dart';
 import '../../../data/repositories/puzzle_providers.dart';
 import '../../../l10n/app_localizations.dart';
@@ -54,106 +55,107 @@ class VictoryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     return Scaffold(
-      backgroundColor: AppColors.bleuNuit,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const SizedBox(height: 16),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: Image.file(
-                            File(session.imagePath),
-                            fit: BoxFit.cover,
+      body: AuroraBackground(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 16),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: Image.file(
+                              File(session.imagePath),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        l.victoryTitle,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: AppColors.or,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        l.victorySubtitle,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          _ResultStat(
-                            icon: Icons.timer_outlined,
-                            label: l.statTime,
-                            value: formatDuration(seconds),
+                        const SizedBox(height: 24),
+                        Text(
+                          l.victoryTitle,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: AppColors.or,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
                           ),
-                          _ResultStat(
-                            icon: Icons.swap_horiz,
-                            label: l.statMoves,
-                            value: '$moves',
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          l.victorySubtitle,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 16,
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                    ],
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _ResultStat(
+                              icon: Icons.timer_outlined,
+                              label: l.statTime,
+                              value: formatDuration(seconds),
+                            ),
+                            _ResultStat(
+                              icon: Icons.swap_horiz,
+                              label: l.statMoves,
+                              value: '$moves',
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: FilledButton.icon(
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.or,
-                        foregroundColor: AppColors.encre,
+                Row(
+                  children: [
+                    Expanded(
+                      child: FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppColors.or,
+                          foregroundColor: AppColors.encre,
+                        ),
+                        onPressed: () => _replay(context),
+                        icon: const Icon(Icons.refresh),
+                        label: Text(l.commonReplay),
                       ),
-                      onPressed: () => _replay(context),
-                      icon: const Icon(Icons.refresh),
-                      label: Text(l.commonReplay),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        side: const BorderSide(color: Colors.white54),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          side: const BorderSide(color: Colors.white54),
+                        ),
+                        onPressed: () => _next(context, ref),
+                        icon: const Icon(Icons.skip_next),
+                        label: Text(l.victoryNext),
                       ),
-                      onPressed: () => _next(context, ref),
-                      icon: const Icon(Icons.skip_next),
-                      label: Text(l.victoryNext),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              TextButton.icon(
-                style: TextButton.styleFrom(foregroundColor: Colors.white70),
-                onPressed: () =>
-                    Navigator.of(context).popUntil((route) => route.isFirst),
-                icon: const Icon(Icons.home_outlined),
-                label: Text(l.victoryNewMemory),
-              ),
-              const SizedBox(height: 8),
-            ],
+                  ],
+                ),
+                const SizedBox(height: 12),
+                TextButton.icon(
+                  style: TextButton.styleFrom(foregroundColor: Colors.white70),
+                  onPressed: () =>
+                      Navigator.of(context).popUntil((route) => route.isFirst),
+                  icon: const Icon(Icons.home_outlined),
+                  label: Text(l.victoryNewMemory),
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
           ),
         ),
       ),

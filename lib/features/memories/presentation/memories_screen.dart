@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../app/theme.dart';
 import '../../../core/widgets/aurora_background.dart';
+import '../../../core/widgets/aurora_page.dart';
 import '../../../data/models/best_score.dart';
 import '../../../data/models/puzzle_session_model.dart';
 import '../../../data/repositories/puzzle_providers.dart';
@@ -67,7 +68,9 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
 
   void _snack(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _addPhotos() async {
@@ -115,17 +118,21 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
     await showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
-      builder: (context) => _DetailsSheet(
-        session: session,
-        bests: _bests[session.id] ?? const {},
-        onPlay: () {
-          Navigator.of(context).pop();
-          _open(session);
-        },
-        onDelete: () {
-          Navigator.of(context).pop();
-          _confirmDelete(session);
-        },
+      backgroundColor: AppColors.bleuNuit,
+      builder: (context) => Theme(
+        data: AppTheme.dark(),
+        child: _DetailsSheet(
+          session: session,
+          bests: _bests[session.id] ?? const {},
+          onPlay: () {
+            Navigator.of(context).pop();
+            _open(session);
+          },
+          onDelete: () {
+            Navigator.of(context).pop();
+            _confirmDelete(session);
+          },
+        ),
       ),
     );
   }
@@ -157,8 +164,25 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    return Scaffold(
-      extendBody: true,
+    return AuroraPage(
+      title: _sessions.isEmpty
+          ? l.memoriesTitle
+          : l.memoriesCountTitle(_sessions.length),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      leading: widget.onMenu == null
+          ? null
+          : IconButton(
+              icon: const Icon(Icons.menu),
+              tooltip: l.menu,
+              onPressed: widget.onMenu,
+            ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.add_a_photo_outlined),
+          tooltip: l.memoriesAdd,
+          onPressed: _busy ? null : _addPhotos,
+        ),
+      ],
       floatingActionButton: _sessions.isEmpty
           ? null
           : FloatingActionButton.extended(
@@ -166,39 +190,25 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
               icon: const Icon(Icons.shuffle),
               label: Text(l.memoriesPlay),
             ),
-      body: AuroraBackground(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _Header(
-                  title: _sessions.isEmpty
-                      ? l.memoriesTitle
-                      : l.memoriesCountTitle(_sessions.length),
-                  onMenu: widget.onMenu,
-                  onAdd: _busy ? null : _addPhotos,
-                  menuTooltip: l.menu,
-                  addTooltip: l.memoriesAdd,
-                ),
-                if (_busy)
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: LinearProgressIndicator(color: AppColors.or),
-                  ),
-                Expanded(child: _buildBody()),
-              ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (_busy)
+            const Padding(
+              padding: EdgeInsets.only(bottom: 8),
+              child: LinearProgressIndicator(color: AppColors.or),
             ),
-          ),
-        ),
+          Expanded(child: _buildBody()),
+        ],
       ),
     );
   }
 
   Widget _buildBody() {
     if (_loading) {
-      return const Center(child: CircularProgressIndicator(color: AppColors.or));
+      return const Center(
+        child: CircularProgressIndicator(color: AppColors.or),
+      );
     }
     if (_sessions.isEmpty) {
       return _EmptyState(onAdd: _busy ? null : _addPhotos);
@@ -227,54 +237,6 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _Header extends StatelessWidget {
-  const _Header({
-    required this.title,
-    required this.onMenu,
-    required this.onAdd,
-    required this.menuTooltip,
-    required this.addTooltip,
-  });
-
-  final String title;
-  final VoidCallback? onMenu;
-  final VoidCallback? onAdd;
-  final String menuTooltip;
-  final String addTooltip;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: kToolbarHeight,
-      child: Row(
-        children: [
-          if (onMenu != null)
-            IconButton(
-              icon: const Icon(Icons.menu, color: Colors.white),
-              tooltip: menuTooltip,
-              onPressed: onMenu,
-            ),
-          Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.add_a_photo_outlined, color: Colors.white),
-            tooltip: addTooltip,
-            onPressed: onAdd,
-          ),
-        ],
-      ),
     );
   }
 }
@@ -320,9 +282,10 @@ class _LevelChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final accent = AppColors.difficulty(difficulty);
-    final progress = (min(wins, LevelProgression.winsPerLevel) /
-            LevelProgression.winsPerLevel)
-        .clamp(0.0, 1.0);
+    final progress =
+        (min(wins, LevelProgression.winsPerLevel) /
+                LevelProgression.winsPerLevel)
+            .clamp(0.0, 1.0);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Column(
@@ -419,9 +382,7 @@ class _TileCaption extends StatelessWidget {
   Widget build(BuildContext context) {
     if (session.playCount == 0 || session.bestTimeSeconds == null) {
       return const Row(
-        children: [
-          Icon(Icons.fiber_new, color: AppColors.or, size: 18),
-        ],
+        children: [Icon(Icons.fiber_new, color: AppColors.or, size: 18)],
       );
     }
     return Row(
@@ -437,7 +398,11 @@ class _TileCaption extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        Icon(Icons.play_arrow, color: Colors.white.withValues(alpha: 0.9), size: 16),
+        Icon(
+          Icons.play_arrow,
+          color: Colors.white.withValues(alpha: 0.9),
+          size: 16,
+        ),
         Text(
           '${session.playCount}',
           style: const TextStyle(color: Colors.white, fontSize: 12),
@@ -537,8 +502,9 @@ class _BestPerLevel extends StatelessWidget {
       children: [
         Text(
           difficulty.label(l),
-          style: theme.textTheme.labelSmall
-              ?.copyWith(color: AppColors.difficulty(difficulty)),
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: AppColors.difficulty(difficulty),
+          ),
         ),
         const SizedBox(height: 2),
         Text(
