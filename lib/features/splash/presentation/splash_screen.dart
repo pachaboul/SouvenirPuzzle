@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../app/theme.dart';
+import '../../../core/widgets/aurora_background.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../shell/presentation/main_shell.dart';
 
-/// Animated premium splash (Bleu Nuit + gold glow) shown briefly at startup.
+/// Animated aurora + glassmorphism splash shown briefly at startup.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -18,11 +19,11 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 900),
+    duration: const Duration(milliseconds: 1000),
   )..forward();
   late final Animation<double> _fade =
       CurvedAnimation(parent: _controller, curve: Curves.easeOut);
-  late final Animation<double> _scale = Tween<double>(begin: 0.85, end: 1).animate(
+  late final Animation<double> _scale = Tween<double>(begin: 0.82, end: 1).animate(
     CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
   );
   Timer? _timer;
@@ -30,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    _timer = Timer(const Duration(milliseconds: 1900), () {
+    _timer = Timer(const Duration(milliseconds: 2000), () {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const MainShell()),
@@ -49,14 +50,7 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     return Scaffold(
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment.center,
-            radius: 1.1,
-            colors: [AppColors.bleuSecondaire, AppColors.bleuNuit],
-          ),
-        ),
+      body: AuroraBackground(
         child: Center(
           child: FadeTransition(
             opacity: _fade,
@@ -65,25 +59,15 @@ class _SplashScreenState extends State<SplashScreen>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white.withValues(alpha: 0.04),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.or.withValues(alpha: 0.25),
-                          blurRadius: 48,
-                          spreadRadius: 4,
-                        ),
-                      ],
-                    ),
+                  GlassCard(
+                    borderRadius: 36,
+                    padding: const EdgeInsets.all(28),
                     child: Image.asset(
                       'assets/images/logo-souvenirpuzzle.png',
-                      height: 150,
+                      height: 132,
                       errorBuilder: (_, __, ___) => const Icon(
                         Icons.extension_outlined,
-                        size: 120,
+                        size: 112,
                         color: AppColors.or,
                       ),
                     ),
@@ -92,7 +76,7 @@ class _SplashScreenState extends State<SplashScreen>
                   Text(
                     l.appName,
                     style: const TextStyle(
-                      color: AppColors.or,
+                      color: Colors.white,
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.5,
@@ -105,8 +89,8 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                   const SizedBox(height: 40),
                   const SizedBox(
-                    width: 28,
-                    height: 28,
+                    width: 26,
+                    height: 26,
                     child: CircularProgressIndicator(
                       strokeWidth: 2.5,
                       color: AppColors.or,

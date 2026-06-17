@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme.dart';
+import '../../../core/widgets/aurora_background.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../puzzle/presentation/play_random.dart';
 import '../../photo_picker/presentation/photo_picker_screen.dart';
+import '../../puzzle/presentation/play_random.dart';
 
-/// Home tab: a premium hero header plus the two primary actions
-/// (create a puzzle / play a random memory).
+/// Home tab — aurora backdrop with glassmorphism content: a logo/title header
+/// and the two primary actions (create a puzzle / play a random memory).
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key, this.onMenu, this.onOpenMemories});
 
@@ -21,6 +22,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
@@ -33,210 +35,129 @@ class HomeScreen extends ConsumerWidget {
                 onPressed: onMenu,
               ),
       ),
-      extendBodyBehindAppBar: true,
-      body: Column(
-        children: [
-          _Hero(appName: l.appName, tagline: l.homeTagline),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  const Spacer(),
-                  IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(
-                          child: _ActionCard(
-                            label: l.homeCreatePuzzle,
-                            icon: Icons.add_photo_alternate_outlined,
-                            background: AppColors.bleuNuit,
-                            foreground: Colors.white,
-                            onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => const PhotoPickerScreen(),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _ActionCard(
-                            label: l.homePlay,
-                            icon: Icons.shuffle,
-                            gradient: const LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [AppColors.orClair, AppColors.or],
-                            ),
-                            foreground: AppColors.encre,
-                            onTap: () => playRandomMemory(
-                              context,
-                              ref,
-                              onEmpty: onOpenMemories,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Hero extends StatelessWidget {
-  const _Hero({required this.appName, required this.tagline});
-
-  final String appName;
-  final String tagline;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.bleuNuit, AppColors.bleuSecondaire],
-        ),
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(36)),
-      ),
-      child: Stack(
-        children: [
-          // Decorative puzzle pieces.
-          Positioned(
-            top: 24,
-            right: -10,
-            child: Icon(
-              Icons.extension,
-              size: 120,
-              color: AppColors.or.withValues(alpha: 0.10),
-            ),
-          ),
-          Positioned(
-            bottom: 8,
-            left: -16,
-            child: Icon(
-              Icons.extension,
-              size: 90,
-              color: Colors.white.withValues(alpha: 0.06),
-            ),
-          ),
-          SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 48, 24, 36),
-              child: Column(
-                children: [
-                  Image.asset(
-                    'assets/images/logo-souvenirpuzzle.png',
-                    height: 120,
-                    errorBuilder: (_, __, ___) => const Icon(
-                      Icons.extension_outlined,
-                      size: 96,
-                      color: AppColors.or,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    appName,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: AppColors.or,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    tagline,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.white70, fontSize: 14),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ActionCard extends StatelessWidget {
-  const _ActionCard({
-    required this.label,
-    required this.icon,
-    required this.foreground,
-    required this.onTap,
-    this.background,
-    this.gradient,
-  });
-
-  final String label;
-  final IconData icon;
-  final Color foreground;
-  final VoidCallback onTap;
-  final Color? background;
-  final Gradient? gradient;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(22),
-        child: Ink(
-          decoration: BoxDecoration(
-            color: background,
-            gradient: gradient,
-            borderRadius: BorderRadius.circular(22),
-            boxShadow: [
-              BoxShadow(
-                color: (background ?? AppColors.or).withValues(alpha: 0.25),
-                blurRadius: 16,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
+      body: AuroraBackground(
+        child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: foreground.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
+                const Spacer(flex: 2),
+                Image.asset(
+                  'assets/images/logo-souvenirpuzzle.png',
+                  height: 132,
+                  errorBuilder: (_, __, ___) => const Icon(
+                    Icons.extension_outlined,
+                    size: 104,
+                    color: AppColors.or,
                   ),
-                  child: Icon(icon, color: foreground, size: 28),
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 20),
                 Text(
-                  label,
-                  style: TextStyle(
-                    color: foreground,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
+                  l.appName,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
                   ),
                 ),
+                const SizedBox(height: 10),
+                Text(
+                  l.homeTagline,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white70, fontSize: 14),
+                ),
+                const Spacer(flex: 3),
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: _GlassAction(
+                          label: l.homeCreatePuzzle,
+                          icon: Icons.add_photo_alternate_outlined,
+                          accent: const Color(0xFF3FA9F5),
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const PhotoPickerScreen(),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _GlassAction(
+                          label: l.homePlay,
+                          icon: Icons.shuffle,
+                          accent: AppColors.or,
+                          onTap: () => playRandomMemory(
+                            context,
+                            ref,
+                            onEmpty: onOpenMemories,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _GlassAction extends StatelessWidget {
+  const _GlassAction({
+    required this.label,
+    required this.icon,
+    required this.accent,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color accent;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      onTap: onTap,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: accent.withValues(alpha: 0.9),
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: accent.withValues(alpha: 0.5),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
+            child: Icon(icon, color: Colors.white, size: 26),
+          ),
+          const SizedBox(height: 28),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
     );
   }
