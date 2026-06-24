@@ -1,0 +1,8 @@
+# Copy this file to android/key.properties and fill in your real values.
+# android/key.properties is git-ignored and must never be committed.
+#
+# storeFile: absolute path to your upload keystore (.jks).
+storePassword=CHANGE_ME
+keyPassword=CHANGE_ME
+keyAlias=upload
+storeFile=/ABSOLUTE/PATH/TO/upload-keystore.jks
