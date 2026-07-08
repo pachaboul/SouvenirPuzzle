@@ -137,6 +137,8 @@ Souvenir Puzzle is built **privacy-by-design**:
 - The user can delete their local history at any time.
 - Permissions are requested and explained clearly.
 
+**[Privacy policy](https://pachaboul.github.io/SouvenirPuzzle/privacy/)** (FR / EN) — for App Store and Play Store listings.
+
 ---
 
 ## Documentation

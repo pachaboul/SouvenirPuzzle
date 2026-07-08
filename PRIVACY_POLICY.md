@@ -1,8 +1,10 @@
 # Privacy Policy — Souvenir Puzzle
 
-_Last updated: 2026-06-17_
+_Last updated: 2026-07-08_
 
-Souvenir Puzzle ("the app") is published by **Koyra Games**. This policy
+**Published online:** https://pachaboul.github.io/SouvenirPuzzle/privacy/
+
+Souvenir Puzzle ("the app") is published by **Koyrasoft**. This policy
 explains how the app handles your data. In short: **everything stays on your
 device. We do not collect, transmit, or share any personal data.**
 
@@ -32,7 +34,7 @@ The app is suitable for all ages and does not collect any data from anyone,
 including children.
 
 ## Contact
-Questions about this policy: **pachaboul@gmail.com**
+Questions about this policy: **koyrasoft@gmail.com**
 
 ## Changes
 If this policy changes, the updated version will be published at the same URL
