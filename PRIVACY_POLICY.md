@@ -2,7 +2,7 @@
 
 _Last updated: 2026-07-08_
 
-**Published online:** https://pachaboul.github.io/SouvenirPuzzle/privacy/
+**Published online:** https://aboulhassane.com/SouvenirPuzzle/privacy/
 
 Souvenir Puzzle ("the app") is published by **Koyrasoft**. This policy
 explains how the app handles your data. In short: **everything stays on your

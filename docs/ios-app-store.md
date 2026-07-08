@@ -85,9 +85,9 @@ Captures marketing plus petites : `screenshots/fr/light/` (412×915).
 
 URL à renseigner dans App Store Connect :
 
-**https://pachaboul.github.io/SouvenirPuzzle/privacy/**
+**https://aboulhassane.com/SouvenirPuzzle/privacy/**
 
-(Fichiers dans `docs/privacy/` — activer GitHub Pages sur la branche `main`, dossier `/docs`.)
+(Également : https://pachaboul.github.io/SouvenirPuzzle/privacy/ — GitHub Pages, dossier `/docs`.)
 
 ### Classification
 
