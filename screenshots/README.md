@@ -6,12 +6,12 @@ Images générées automatiquement pour le Play Store, le site ou la communicati
 
 | Dossier | Contenu |
 |---------|---------|
-| `app-store/6.7-inch/fr/` | **App Store** 6,7" — **1290×2796** px (6 écrans) |
+| `app-store/6.5-inch/fr/` | **App Store** 6,5" — **1284×2778** px (6 écrans) |
 | `fr/light/` | Marketing / Play Store — 412×915 px |
 | `fr/dark/` | Français, thème sombre |
 | `en/light/` | Anglais, thème clair |
 
-**App Store (6,7")** : accueil, souvenirs, stats, difficulté, puzzle, victoire.
+**App Store (6,5")** : accueil, souvenirs, stats, difficulté, puzzle, victoire — **1284×2778 px**.
 
 **Marketing (412×915)** : splash, accueil, souvenirs, stats, paramètres, guide, difficulté, puzzle, victoire.
 
@@ -22,7 +22,7 @@ chmod +x tool/capture_screenshots.sh
 ./tool/capture_screenshots.sh
 ```
 
-Ou uniquement App Store 6,7" :
+Ou uniquement App Store 6,5" (1284×2778) :
 
 ```bash
 flutter test test/app_store_screenshots_test.dart --update-goldens

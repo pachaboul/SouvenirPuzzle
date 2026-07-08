@@ -13,9 +13,12 @@ import 'screenshot_providers.dart';
 /// Typical Android phone logical size (Pixel-class).
 const kScreenshotSize = Size(412, 915);
 
-/// iPhone 6,7" App Store — 430×932 pt @3x → 1290×2796 px.
-const kAppStore67LogicalSize = Size(430, 932);
-const double kAppStore67DevicePixelRatio = 3.0;
+/// iPhone 6,5" App Store — 428×926 pt @3x → 1284×2778 px.
+const kAppStore65LogicalSize = Size(428, 926);
+const double kAppStore65DevicePixelRatio = 3.0;
+
+/// iPhone 6,5" alternate — 414×896 pt @3x → 1242×2688 px.
+const kAppStore65AltLogicalSize = Size(414, 896);
 
 class ScreenshotViewport {
   const ScreenshotViewport({
@@ -31,9 +34,14 @@ class ScreenshotViewport {
     devicePixelRatio: 1.0,
   );
 
-  static const appStore67 = ScreenshotViewport(
-    logicalSize: kAppStore67LogicalSize,
-    devicePixelRatio: kAppStore67DevicePixelRatio,
+  static const appStore65 = ScreenshotViewport(
+    logicalSize: kAppStore65LogicalSize,
+    devicePixelRatio: kAppStore65DevicePixelRatio,
+  );
+
+  static const appStore65Alt = ScreenshotViewport(
+    logicalSize: kAppStore65AltLogicalSize,
+    devicePixelRatio: kAppStore65DevicePixelRatio,
   );
 }
 

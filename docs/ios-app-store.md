@@ -67,17 +67,16 @@ L'IPA est généré dans `build/ios/ipa/souvenir_puzzle.ipa`.
 
 ### Captures d'écran
 
-**App Store 6,7"** (1290 × 2796 px) — prêtes à l'emploi :
+**App Store 6,5"** (1284 × 2778 px) — slot « 6.5" Display » :
 
-`screenshots/app-store/6.7-inch/fr/` (accueil, souvenirs, stats, difficulté, puzzle, victoire)
+`screenshots/app-store/6.5-inch/fr/` (accueil, souvenirs, stats, difficulté, puzzle, victoire)
 
-Tailles requises (iPhone) :
+Formats acceptés par Apple pour ce slot : 1242×2688, 1284×2778 (et paysage). Nous générons **1284×2778**.
 
 | Appareil | Résolution | Statut |
 |----------|------------|--------|
-| 6,7" (14/15 Pro Max…) | 1290 × 2796 | ✅ généré |
-| 6,5" (11 Pro Max…) | 1242 × 2688 | redimensionner si besoin |
-| 5,5" (8 Plus…) | 1242 × 2208 | optionnel |
+| 6,5" Display | 1284 × 2778 | ✅ généré |
+| 6,5" Display (alt.) | 1242 × 2688 | possible si besoin |
 
 Captures marketing plus petites : `screenshots/fr/light/` (412×915).
 

@@ -13,18 +13,18 @@ import 'package:souvenir_puzzle/features/stats/presentation/stats_screen.dart';
 import 'fixtures/screenshot_demo_data.dart';
 import 'fixtures/screenshot_harness.dart';
 
-/// App Store 6,7" screenshots — 1290×2796 px (iPhone 14/15 Pro Max class).
+/// App Store 6,5" screenshots — 1284×2778 px (slot « 6.5" Display »).
 void main() {
   late String demoImagePath;
-  const viewport = ScreenshotViewport.appStore67;
-  const prefix = '../screenshots/app-store/6.7-inch/fr';
+  const viewport = ScreenshotViewport.appStore65;
+  const prefix = '../screenshots/app-store/6.5-inch/fr';
 
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
     demoImagePath = await copyDemoImageToTemp();
   });
 
-  group('App Store 6.7-inch FR light', () {
+  group('App Store 6.5-inch FR light (1284×2778)', () {
     testWidgets('01_home', (tester) async {
       await pumpScreenshotApp(
         tester,
